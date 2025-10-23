@@ -61,22 +61,43 @@ def gallery_section() -> rx.Component:
                 class_name="text-3xl font-bold text-center text-gray-900",
             ),
             rx.el.p(
-                "The art, the process, and the delicious results.",
+                "The art, the process, and the delicious results. Uploaded from our admin panel.",
                 class_name="mt-2 text-center text-gray-600",
             ),
-            rx.el.div(
-                rx.foreach(
-                    State.gallery_images,
-                    lambda img: rx.el.div(
-                        rx.image(
-                            src=img,
-                            alt="Gallery image",
-                            class_name="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+            rx.cond(
+                State.uploaded_files.length() > 0,
+                rx.el.div(
+                    rx.foreach(
+                        State.uploaded_files,
+                        lambda filename: rx.el.div(
+                            rx.cond(
+                                filename.to_string().lower().contains(".mp4")
+                                | filename.to_string().lower().contains(".mov")
+                                | filename.to_string().lower().contains(".avi"),
+                                rx.el.div(
+                                    rx.icon(
+                                        "video", class_name="h-12 w-12 text-gray-500"
+                                    ),
+                                    class_name="w-full h-full flex items-center justify-center bg-gray-100",
+                                ),
+                                rx.image(
+                                    src=rx.get_upload_url(filename),
+                                    alt="Gallery image",
+                                    class_name="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+                                ),
+                            ),
+                            class_name="aspect-video w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group",
                         ),
-                        class_name="aspect-video w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group",
                     ),
+                    class_name="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
                 ),
-                class_name="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+                rx.el.div(
+                    rx.el.p(
+                        "No images uploaded yet. Visit the admin upload page to add some!",
+                        class_name="text-center text-gray-500",
+                    ),
+                    class_name="mt-12 text-center py-10 border-2 border-dashed rounded-lg",
+                ),
             ),
             class_name="container mx-auto px-4 py-16",
         ),
