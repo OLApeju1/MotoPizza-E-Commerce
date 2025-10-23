@@ -12,6 +12,7 @@ def header() -> rx.Component:
                         alt="MotoPizza Logo",
                         class_name="h-8 w-auto",
                     ),
+                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2",
                 ),
                 href="/",
@@ -75,6 +76,7 @@ def footer() -> rx.Component:
                         alt="MotoPizza Logo",
                         class_name="h-8 w-auto",
                     ),
+                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2 mb-4",
                 ),
                 rx.el.p(
