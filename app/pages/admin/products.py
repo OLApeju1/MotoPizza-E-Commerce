@@ -217,12 +217,17 @@ def product_table_row(product: Product) -> rx.Component:
     return rx.el.tr(
         rx.el.td(
             rx.image(
-                src=product["image"], class_name="h-12 w-12 object-cover rounded-md"
+                src=rx.cond(
+                    product["image"].contains("https://"),
+                    product["image"],
+                    rx.get_upload_url(product["image"]),
+                ),
+                class_name="h-12 w-12 object-cover rounded-md",
             ),
             class_name="p-4 border-b",
         ),
         rx.el.td(product["name"], class_name="p-4 border-b font-medium"),
-        rx.el.td(f"₦{product['price']:.2f}", class_name="p-4 border-b"),
+        rx.el.td(f"\\[U+20A6]{product['price']:.2f}", class_name="p-4 border-b"),
         rx.el.td(
             rx.el.div(
                 rx.el.button(

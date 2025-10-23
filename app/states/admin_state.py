@@ -109,15 +109,7 @@ class AdminState(rx.State):
             yield rx.toast.error("Name, price, and image are required.")
             self.is_saving = False
             return
-        image_filename = self.product_form["image"]
-        if image_filename.startswith("https://placehold.co"):
-            final_image_url = "/placeholder.svg"
-        elif not image_filename.startswith("/"):
-            final_image_url = f"/{image_filename}"
-        else:
-            final_image_url = image_filename
         product_to_save = self.product_form.copy()
-        product_to_save["image"] = final_image_url
         if self.is_editing:
             index_to_update = -1
             for i, p in enumerate(products):

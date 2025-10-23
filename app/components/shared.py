@@ -188,7 +188,11 @@ def product_card(product: Product) -> rx.Component:
         rx.el.div(
             rx.el.div(
                 rx.image(
-                    src=product["image"],
+                    src=rx.cond(
+                        product["image"].contains("https://"),
+                        product["image"],
+                        rx.get_upload_url(product["image"]),
+                    ),
                     alt=product["name"],
                     class_name="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
                 ),

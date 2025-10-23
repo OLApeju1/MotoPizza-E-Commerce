@@ -10,7 +10,11 @@ def product_detail_content() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.image(
-                        src=State.current_product["image"],
+                        src=rx.cond(
+                            State.current_product["image"].contains("https://"),
+                            State.current_product["image"],
+                            rx.get_upload_url(State.current_product["image"]),
+                        ),
                         alt=State.current_product["name"],
                         class_name="w-full h-auto object-cover rounded-xl shadow-lg border border-gray-200",
                     ),
