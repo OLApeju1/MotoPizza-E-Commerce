@@ -181,7 +181,13 @@ def social_media_section() -> rx.Component:
                     href="#",
                     class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
                 ),
-                class_name="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto",
+                rx.el.a(
+                    rx.icon("twitch", class_name="h-8 w-8"),
+                    rx.el.span("@motopizza.bite", class_name="font-semibold text-lg"),
+                    href="#",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                ),
+                class_name="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto",
             ),
             class_name="container mx-auto px-4 py-16",
         )
