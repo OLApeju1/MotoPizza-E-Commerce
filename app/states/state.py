@@ -182,8 +182,16 @@ class State(rx.State):
                 if item["quantity"] > 1:
                     item["quantity"] -= 1
                 else:
-                    self.remove_from_cart(product_id)
+                    self.cart = [
+                        i for i in self.cart if i["product"]["id"] != product_id
+                    ]
                 return
+
+    @rx.event
+    def delete_product(self, product_id: int):
+        self.products = [p for p in self.products if p["id"] != product_id]
+        self.cart = [c for c in self.cart if c["product"]["id"] != product_id]
+        yield rx.toast.info(f"Product with ID {product_id} has been deleted.")
 
     @rx.event
     async def handle_upload(self, files: list[rx.UploadFile]):

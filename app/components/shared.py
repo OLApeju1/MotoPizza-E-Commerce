@@ -36,11 +36,27 @@ def header() -> rx.Component:
                 class_name="hidden md:flex items-center gap-2",
             ),
             rx.cond(
-                State.router.page.path == "/admin/upload",
-                rx.el.a(
-                    "Upload Content",
-                    href="/admin/upload",
-                    class_name="px-3 py-2 text-sm font-bold text-teal-500 transition-colors",
+                State.router.page.path.contains("/admin"),
+                rx.el.div(
+                    rx.el.a(
+                        "Uploads",
+                        href="/admin/upload",
+                        class_name=rx.cond(
+                            State.router.page.path == "/admin/upload",
+                            "px-3 py-2 text-sm font-bold text-teal-500",
+                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                        ),
+                    ),
+                    rx.el.a(
+                        "Products",
+                        href="/admin/products",
+                        class_name=rx.cond(
+                            State.router.page.path == "/admin/products",
+                            "px-3 py-2 text-sm font-bold text-teal-500",
+                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                        ),
+                    ),
+                    class_name="flex items-center gap-2 border-l ml-4 pl-4",
                 ),
                 None,
             ),

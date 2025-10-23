@@ -5,6 +5,7 @@ from app.pages.product_detail import product_detail_page
 from app.pages.about import about_page
 from app.pages.cart import cart_page
 from app.pages.admin.upload import upload_page
+from app.pages.admin.products import admin_products_page
 
 app = rx.App(
     theme=rx.theme(appearance="light"),
@@ -22,4 +23,5 @@ app.add_page(products_page, route="/products")
 app.add_page(about_page, route="/about")
 app.add_page(cart_page, route="/cart")
 app.add_page(upload_page, route="/admin/upload")
+app.add_page(admin_products_page, route="/admin/products")
 app.add_page(product_detail_page, route="/products/[product_id]")
