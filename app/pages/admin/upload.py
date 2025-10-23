@@ -1,5 +1,6 @@
 import reflex as rx
 from app.states.state import State
+from app.states.auth_state import AuthState
 from app.components.shared import page_layout
 
 
@@ -134,4 +135,16 @@ def upload_page_content() -> rx.Component:
 
 
 def upload_page() -> rx.Component:
-    return page_layout(upload_page_content())
+    return page_layout(
+        rx.el.div(
+            rx.cond(
+                AuthState.is_authenticated,
+                upload_page_content(),
+                rx.el.div(
+                    rx.el.p("Redirecting to login..."),
+                    class_name="min-h-[60vh] flex items-center justify-center",
+                ),
+            ),
+            on_mount=AuthState.check_auth,
+        )
+    )

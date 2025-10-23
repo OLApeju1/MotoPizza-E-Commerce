@@ -1,6 +1,7 @@
 import reflex as rx
 from typing import TypedDict
 import asyncio
+from app.states.auth_state import AuthState
 
 
 class Product(TypedDict):
@@ -188,7 +189,11 @@ class State(rx.State):
                 return
 
     @rx.event
-    def delete_product(self, product_id: int):
+    async def delete_product(self, product_id: int):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield rx.toast.error("You must be logged in to delete products.")
+            return
         self.products = [p for p in self.products if p["id"] != product_id]
         self.cart = [c for c in self.cart if c["product"]["id"] != product_id]
         yield rx.toast.info(f"Product with ID {product_id} has been deleted.")
@@ -196,6 +201,10 @@ class State(rx.State):
     @rx.event
     async def handle_upload(self, files: list[rx.UploadFile]):
         """Handle the upload of files."""
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield rx.toast.error("You must be logged in to upload files.")
+            return
         if not files:
             yield rx.toast.error("No files selected for upload.")
             return
@@ -215,13 +224,19 @@ class State(rx.State):
         return
 
     @rx.event
-    def clear_uploads(self):
+    async def clear_uploads(self):
         """Clear all uploaded files."""
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            return rx.toast.error("You must be logged in to clear uploads.")
         self.uploaded_files.clear()
 
     @rx.event
-    def delete_uploaded_file(self, filename: str):
+    async def delete_uploaded_file(self, filename: str):
         """Delete a specific uploaded file."""
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            return rx.toast.error("You must be logged in to delete files.")
         self.uploaded_files = [f for f in self.uploaded_files if f != filename]
 
     gallery_images: list[str] = [

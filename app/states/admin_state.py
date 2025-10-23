@@ -1,6 +1,7 @@
 import reflex as rx
 from typing import TypedDict
 from app.states.state import State, Product
+from app.states.auth_state import AuthState
 import asyncio
 import time
 import logging
@@ -70,6 +71,10 @@ class AdminState(rx.State):
 
     @rx.event
     async def handle_product_image_upload(self, files: list[rx.UploadFile]):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield rx.toast.error("You must be logged in to upload images.")
+            return
         if not files:
             return
         upload_data = await files[0].read()
@@ -81,6 +86,10 @@ class AdminState(rx.State):
 
     @rx.event
     async def save_product(self, form_data: dict[str, str]):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield rx.toast.error("You must be logged in to save products.")
+            return
         self.is_saving = True
         yield
         if form_data.get("new_ingredient"):

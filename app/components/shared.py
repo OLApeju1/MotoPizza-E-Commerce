@@ -1,5 +1,6 @@
 import reflex as rx
 from app.states.state import State, Product
+from app.states.auth_state import AuthState
 
 
 def header() -> rx.Component:
@@ -36,7 +37,7 @@ def header() -> rx.Component:
                 class_name="hidden md:flex items-center gap-2",
             ),
             rx.cond(
-                State.router.page.path.contains("/admin"),
+                AuthState.is_authenticated,
                 rx.el.div(
                     rx.el.a(
                         "Uploads",
@@ -74,7 +75,8 @@ def header() -> rx.Component:
                     href="/cart",
                     class_name="relative px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                 ),
-                class_name="flex items-center",
+                auth_button(),
+                class_name="flex items-center gap-2",
             ),
             class_name="container mx-auto flex items-center justify-between p-4",
         ),
@@ -159,6 +161,25 @@ def footer() -> rx.Component:
             class_name="border-t border-gray-200",
         ),
         class_name="bg-gray-50",
+    )
+
+
+def auth_button() -> rx.Component:
+    return rx.el.div(
+        rx.cond(
+            AuthState.is_authenticated,
+            rx.el.button(
+                "Logout",
+                on_click=AuthState.logout,
+                class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
+            ),
+            rx.el.a(
+                "Admin Login",
+                href="/login",
+                class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
+            ),
+        ),
+        class_name="ml-4 border-l pl-4",
     )
 
 

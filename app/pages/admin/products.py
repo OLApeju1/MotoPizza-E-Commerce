@@ -1,6 +1,7 @@
 import reflex as rx
 from app.states.state import State, Product
 from app.states.admin_state import AdminState
+from app.states.auth_state import AuthState
 from app.components.shared import page_layout
 
 
@@ -245,15 +246,27 @@ def product_table_row(product: Product) -> rx.Component:
 def admin_products_page() -> rx.Component:
     return page_layout(
         rx.el.div(
-            rx.el.div(
-                rx.el.h1("Product Management", class_name="text-4xl font-bold"),
-                rx.el.p(
-                    "Add, edit, and remove products from your store.",
-                    class_name="text-gray-600",
+            rx.cond(
+                AuthState.is_authenticated,
+                rx.el.div(
+                    rx.el.div(
+                        rx.el.h1("Product Management", class_name="text-4xl font-bold"),
+                        rx.el.p(
+                            "Add, edit, and remove products from your store.",
+                            class_name="text-gray-600",
+                        ),
+                        class_name="mb-8 text-center",
+                    ),
+                    rx.el.div(
+                        product_form(), products_table(), class_name="max-w-5xl mx-auto"
+                    ),
+                    class_name="container mx-auto p-8",
                 ),
-                class_name="mb-8 text-center",
+                rx.el.div(
+                    rx.el.p("Redirecting to login..."),
+                    class_name="min-h-[60vh] flex items-center justify-center",
+                ),
             ),
-            rx.el.div(product_form(), products_table(), class_name="max-w-5xl mx-auto"),
-            class_name="container mx-auto p-8",
+            on_mount=AuthState.check_auth,
         )
     )
