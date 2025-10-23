@@ -157,9 +157,44 @@ def faq_section() -> rx.Component:
     )
 
 
+def social_media_section() -> rx.Component:
+    return rx.el.section(
+        rx.el.div(
+            rx.el.h2(
+                "Follow Our Journey",
+                class_name="text-3xl font-bold text-center text-gray-900",
+            ),
+            rx.el.p(
+                "Stay connected with us on social media for the latest updates, behind-the-scenes content, and delicious inspiration.",
+                class_name="mt-2 text-center text-gray-600 max-w-2xl mx-auto",
+            ),
+            rx.el.div(
+                rx.el.a(
+                    rx.icon("instagram", class_name="h-8 w-8"),
+                    rx.el.span("@motopizza.bite", class_name="font-semibold text-lg"),
+                    href="#",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                ),
+                rx.el.a(
+                    rx.icon("facebook", class_name="h-8 w-8"),
+                    rx.el.span("MotoPizza Bite", class_name="font-semibold text-lg"),
+                    href="#",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                ),
+                class_name="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto",
+            ),
+            class_name="container mx-auto px-4 py-16",
+        )
+    )
+
+
 def about_page() -> rx.Component:
     return page_layout(
         rx.el.div(
-            about_hero(), gallery_section(), testimonials_section(), faq_section()
+            about_hero(),
+            gallery_section(),
+            testimonials_section(),
+            social_media_section(),
+            faq_section(),
         )
     )
