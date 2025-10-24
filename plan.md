@@ -221,73 +221,158 @@
   - Unauthenticated user → redirected to login
   - Authenticated user → order stored and WhatsApp redirect
 
+## Phase 16: Admin Management System ✅
+- [x] Create Admin TypedDict with fields: username, password_hash, created_at
+- [x] Add admins list to AuthState for storing admin accounts
+- [x] Create `/admin/users` page for admin management
+- [x] Build admin add form with fields:
+  - Username (text input)
+  - Password (password input)
+  - Confirm Password (password input)
+- [x] Add "Add Admin" submit button
+- [x] Implement add_admin event handler with validations:
+  - Check all fields are filled
+  - Verify passwords match
+  - Check for duplicate usernames
+  - Hash password with SHA-256 before storing
+  - Add timestamp (created_at) to new admin
+- [x] Display admin table with columns:
+  - Username
+  - Created At (timestamp)
+  - Actions (delete button)
+- [x] Implement delete_admin functionality:
+  - Add set_admin_to_delete event handler
+  - Create delete confirmation dialog
+  - Implement confirm_delete_admin event handler
+  - Add cancel_delete event handler
+  - Protect main admin from deletion (from env vars)
+- [x] Add "Users" link to admin navigation in header
+- [x] Add authentication protection to admin users page
+- [x] Restrict admin management to main admin only:
+  - Add is_main_admin computed variable
+  - Only main admin (from ADMIN_USERNAME env) can add/remove admins
+  - Show "Only the main admin can manage users" message for other admins
+- [x] Initialize default admin account:
+  - Create _ensure_main_admin helper method
+  - Auto-create admin from environment variables on first load
+  - Prevent duplicate admin creation
+- [x] Add success/error toast notifications:
+  - Success toast when admin added
+  - Error toast for validation failures
+  - Success toast when admin deleted
+  - Error toast when trying to delete main admin
+- [x] Test all admin management scenarios:
+  - Add new admin successfully
+  - Duplicate username validation
+  - Password mismatch validation
+  - Delete regular admin
+  - Prevent main admin deletion
+  - Restrict management to main admin only
+
 ---
 
-**Current Status**: ✅ Phase 15 complete! Authentication-based checkout and order management system implemented.
+**Current Status**: ✅ Phase 16 complete! Admin management system with role-based access control implemented.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
 - ✅ User registration and authentication system
-- ✅ **Authentication-based checkout flow**
-- ✅ **Order tracking and management system**
-- ✅ **Admin orders dashboard with comprehensive order data**
-- ✅ Multi-user support with secure password hashing
-- ✅ Secure admin authentication with environment variable support
+- ✅ Authentication-based checkout and order management
+- ✅ **Multi-admin support with role-based access control**
+- ✅ **Admin user management system (add/remove admins)**
+- ✅ **Main admin protection (cannot be deleted)**
+- ✅ Secure password hashing and validation
 - ✅ Protected admin routes and API endpoints
 - ✅ WhatsApp integration with phone number 07080234820
 - ✅ Complete product and content management system
 
-**New Checkout Flow**:
-1. **Unauthenticated Users**:
-   - Click "Proceed to Checkout" → redirected to `/login?return_url=/cart`
-   - Must login or signup before placing orders
-   - After login → returned to cart page
-   
-2. **Authenticated Users**:
-   - Click "Proceed to Checkout" → order automatically stored
-   - Order includes: username, email, phone, timestamp, cart items, status
-   - Immediately redirected to WhatsApp with order details
-   - Cart is cleared after successful order placement
+**Admin Management Features**:
+- 🔐 **Role-Based Access Control**: Only main admin can manage other admins
+- ➕ **Add Admins**: Create new admin accounts with secure passwords
+- 🗑️ **Remove Admins**: Delete admin accounts (except main admin)
+- 🛡️ **Main Admin Protection**: Cannot delete the primary admin account
+- ✅ **Validation**: Password matching, duplicate username checking
+- 📊 **Admin Table**: View all admin accounts with creation timestamps
+- 🔒 **Authentication Required**: Only authenticated admins can access page
 
-**Order Management Features**:
-- 📊 **Admin Orders Dashboard**: View all customer orders at `/admin/orders`
-- 🆔 **Order Tracking**: Each order has unique ID and timestamp
-- 👤 **Customer Details**: Full customer information (name, email, phone)
-- 🛒 **Order Contents**: Complete list of items with quantities
-- 🏷️ **Status Tracking**: Visual status badges (pending, completed)
-- 🔒 **Protected Access**: Only authenticated admins can view orders
-
-**Order Data Structure**:
+**Admin TypedDict Structure**:
 ```python
-Order = {
-    "id": 1,                           # Unique order ID
-    "username": "John Doe",            # Customer name
-    "email": "john@example.com",       # Customer email
-    "phone": "08012345678",            # Customer phone
-    "timestamp": "2024-01-15 10:30:00", # Order date/time
-    "cart_items": [...],               # Full cart contents
-    "status": "pending"                # Order status
+Admin = {
+    "username": "johndoe",                    # Admin username
+    "password_hash": "sha256_hash...",        # Hashed password
+    "created_at": "2024-01-15 10:30"         # Creation timestamp
 }
 ```
 
-**Benefits of New System**:
-- ✅ **Better User Experience**: Seamless checkout for logged-in users
-- ✅ **Data Collection**: Automatic capture of customer information
-- ✅ **Order History**: Complete order tracking for admin
-- ✅ **Security**: Only authenticated users can place orders
-- ✅ **Efficiency**: No manual form filling for returning customers
+**Access Control**:
+- **Main Admin** (from ADMIN_USERNAME env variable):
+  - Can view all admins
+  - Can add new admins
+  - Can delete other admins
+  - Cannot be deleted
+  
+- **Regular Admins**:
+  - Can view admin list
+  - Cannot add new admins
+  - Cannot delete admins
+  - See "Only the main admin can manage users" message
+
+**Admin Management Workflow**:
+1. Main admin logs in with credentials from environment variables
+2. Navigates to `/admin/users` page
+3. Sees list of all admin accounts in table
+4. Can add new admin by filling form:
+   - Enter username
+   - Enter password
+   - Confirm password
+   - Click "Add Admin"
+5. Can delete admin accounts:
+   - Click delete button for admin
+   - Confirm deletion in dialog
+   - Admin is removed from system
+6. Main admin account shows "Cannot Delete" label
+
+**Validation Rules**:
+- ✅ All fields required (username, password, confirm_password)
+- ✅ Passwords must match
+- ✅ Username must be unique
+- ✅ Password hashed with SHA-256 before storage
+- ✅ Main admin cannot be deleted
+- ✅ Only main admin can perform admin management
+
+**Security Features**:
+- 🔒 Page protected by authentication check
+- 🔐 Role-based access control (main admin only)
+- 🛡️ Main admin cannot be deleted
+- 🔑 Passwords hashed with SHA-256
+- ✅ Validation on all inputs
+- 🚫 Unauthorized users redirected to login
+
+**UI Components**:
+- **Add Admin Form**: Username, password, confirm password fields
+- **Admin Table**: Displays all admin accounts with timestamps
+- **Delete Button**: Shows for all admins except main admin
+- **Delete Dialog**: Confirmation modal before deletion
+- **Toast Notifications**: Success/error messages for all actions
+- **Error Display**: Shows validation errors below form
+
+**Benefits**:
+- ✅ **Multi-Admin Support**: Multiple people can manage the system
+- ✅ **Secure Access Control**: Only main admin can manage admins
+- ✅ **Audit Trail**: Creation timestamps for all admins
+- ✅ **Safety**: Main admin protected from accidental deletion
+- ✅ **Validation**: Prevents common mistakes (duplicate usernames, password mismatches)
 
 **User Flow**:
-1. User adds items to cart
-2. Clicks "Proceed to Checkout"
-3. If not logged in → redirected to login/signup
-4. If logged in → order stored automatically with user details
-5. User redirected to WhatsApp with order summary
-6. Admin can view all orders in `/admin/orders` dashboard
+1. Main admin logs in
+2. Clicks "Users" in admin navigation
+3. Views list of all admin accounts
+4. To add admin:
+   - Fills out form with username and passwords
+   - Clicks "Add Admin"
+   - New admin appears in table
+5. To remove admin:
+   - Clicks delete button for admin
+   - Confirms deletion in dialog
+   - Admin is removed from list
 
-**Admin Features**:
-- View all customer orders in one place
-- See order details including items and quantities
-- Track order status with visual badges
-- Access customer contact information
-- Monitor order timestamps and history
+**The MotoPizza shop now has complete admin management with role-based access control!** 🔐✨

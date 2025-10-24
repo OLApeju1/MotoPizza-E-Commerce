@@ -36,3 +36,6 @@ app.add_page(checkout_page, route="/checkout")
 app.add_page(admin_customers_page, route="/admin/customers")
 app.add_page(admin_orders_page, route="/admin/orders")
 app.add_page(signup_page, route="/signup")
+from app.pages.admin.users import admin_users_page
+
+app.add_page(admin_users_page, route="/admin/users")

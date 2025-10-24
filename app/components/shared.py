@@ -76,6 +76,15 @@ def header() -> rx.Component:
                                 "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                             ),
                         ),
+                        rx.el.a(
+                            "Users",
+                            href="/admin/users",
+                            class_name=rx.cond(
+                                State.router.page.path == "/admin/users",
+                                "px-3 py-2 text-sm font-bold text-teal-500",
+                                "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                            ),
+                        ),
                         rx.el.button(
                             "Logout",
                             on_click=AuthState.logout,
