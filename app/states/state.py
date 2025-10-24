@@ -21,6 +21,8 @@ class CartItem(TypedDict):
 
 
 class CustomerEmail(TypedDict):
+    name: str
+    phone: str
     email: str
     timestamp: str
     cart_items: list[CartItem]
@@ -182,7 +184,13 @@ class State(rx.State):
         message_lines.append("")
         message_lines.append(f"Total: ₦{self.cart_total:.2f}")
         message_lines.append("")
-        message_lines.append("Please let me know the next steps. Thank you!")
+        customer_name = self.customer_emails[-1]["name"] if self.customer_emails else ""
+        if customer_name:
+            message_lines.append(
+                f"My name is {customer_name}. Please let me know the next steps. Thank you!"
+            )
+        else:
+            message_lines.append("Please let me know the next steps. Thank you!")
         message = """
 """.join(message_lines)
         phone_number = "1234567890"
@@ -226,10 +234,14 @@ class State(rx.State):
     def process_checkout(self, form_data: dict[str, str]):
         import datetime
 
+        name = form_data.get("name")
+        phone = form_data.get("phone")
         email = form_data.get("email")
-        if not email:
-            return rx.toast.error("Email is required to proceed.")
+        if not all([name, phone, email]):
+            return rx.toast.error("Name, phone, and email are required.")
         customer_info = {
+            "name": name,
+            "phone": phone,
             "email": email,
             "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "cart_items": self.cart,

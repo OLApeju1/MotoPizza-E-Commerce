@@ -6,7 +6,9 @@ from app.components.shared import page_layout
 
 def customer_email_row(email: CustomerEmail) -> rx.Component:
     return rx.el.tr(
-        rx.el.td(email["email"], class_name="p-4 border-b font-medium"),
+        rx.el.td(email["name"], class_name="p-4 border-b font-medium"),
+        rx.el.td(email["phone"], class_name="p-4 border-b"),
+        rx.el.td(email["email"], class_name="p-4 border-b"),
         rx.el.td(email["timestamp"], class_name="p-4 border-b"),
         rx.el.td(
             rx.el.ul(
@@ -26,13 +28,17 @@ def customer_email_row(email: CustomerEmail) -> rx.Component:
 
 def customers_table() -> rx.Component:
     return rx.el.div(
-        rx.el.h2("Customer Emails", class_name="text-2xl font-bold text-gray-900 mb-6"),
+        rx.el.h2(
+            "Customer Information", class_name="text-2xl font-bold text-gray-900 mb-6"
+        ),
         rx.cond(
             State.customer_emails.length() > 0,
             rx.el.div(
                 rx.el.table(
                     rx.el.thead(
                         rx.el.tr(
+                            rx.el.th("Name", class_name="px-4 py-2 text-left"),
+                            rx.el.th("Phone", class_name="px-4 py-2 text-left"),
                             rx.el.th("Email", class_name="px-4 py-2 text-left"),
                             rx.el.th("Timestamp", class_name="px-4 py-2 text-left"),
                             rx.el.th("Cart Items", class_name="px-4 py-2 text-left"),
@@ -46,7 +52,7 @@ def customers_table() -> rx.Component:
             ),
             rx.el.div(
                 rx.el.p(
-                    "No customer emails have been collected yet.",
+                    "No customer information has been collected yet.",
                     class_name="text-gray-500",
                 ),
                 class_name="text-center py-10 border-2 border-dashed rounded-lg",

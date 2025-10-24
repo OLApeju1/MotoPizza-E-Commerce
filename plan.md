@@ -102,19 +102,37 @@
 - [x] Update cart page to link "Proceed to Checkout" to `/checkout` route
 - [x] Add empty cart validation on checkout page
 
+## Phase 11: Enhanced Customer Data Collection ✅
+- [x] Update CustomerEmail TypedDict to include name and phone fields
+- [x] Modify checkout page form to collect:
+  - Full Name (text input)
+  - Phone Number (tel input)
+  - Email Address (email input)
+- [x] Update process_checkout event handler to:
+  - Validate all three required fields (name, phone, email)
+  - Store complete customer profile with cart data
+- [x] Update admin customers table to display:
+  - Name column (first column)
+  - Phone column (second column)
+  - Email column (third column)
+  - Timestamp column (fourth column)
+  - Cart Items column (fifth column)
+- [x] Update WhatsApp checkout URL to include customer name in message
+- [x] Add proper placeholder text for all form fields
+- [x] Ensure form validation shows errors for missing fields
+
 ---
 
-**Current Status**: ✅ Phase 10 complete! All features implemented and tested.
+**Current Status**: ✅ Phase 11 complete! Enhanced customer data collection implemented.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
 - ✅ Admin authentication and authorization system
 - ✅ Protected admin routes and API endpoints
-- ✅ Customer email collection during checkout
-- ✅ Marketing database of customer emails with purchase history
-- ✅ WhatsApp integration for order completion
-- ✅ Admin CRM page to view all customer emails
-- ✅ Login visible in public navigation
+- ✅ **Enhanced customer data collection (name, phone, email)**
+- ✅ **Complete customer profiles in admin CRM**
+- ✅ WhatsApp integration with personalized messages
+- ✅ Admin CRM page with comprehensive customer data
 - ✅ Complete product and content management system
 - ✅ Secure event handlers with authentication checks
 
@@ -123,17 +141,21 @@
 **Guest Customer Checkout:**
 1. Browse products → Add to cart
 2. Click "Proceed to Checkout" → Checkout page
-3. Enter email address → Submit form
-4. Email stored in admin database → WhatsApp opens with order details
+3. Enter full name, phone number, and email address
+4. Submit form → Complete customer profile stored
+5. WhatsApp opens with personalized order details including name
 
 **Admin Access:**
 1. Click "Login" in header → Login page
 2. Enter credentials (username: `admin`, password: `admin`)
 3. Access admin pages: Uploads, Products, Customers
-4. View customer emails and marketing data
+4. View complete customer profiles with contact information
+5. See purchase history and marketing data
 
-**Marketing Benefits:**
-- Collect customer emails automatically during checkout
-- View complete purchase history for each customer
-- Build email list for promotional campaigns
-- Track customer behavior and preferences
+**Marketing Benefits**:
+- ✅ Collect customer names for personalized communication
+- ✅ Store phone numbers for SMS/WhatsApp marketing
+- ✅ Build email list for promotional campaigns
+- ✅ Track customer behavior and preferences
+- ✅ Create comprehensive customer database
+- ✅ Enable multi-channel marketing (email, phone, WhatsApp)

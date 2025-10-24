@@ -40,24 +40,57 @@ def checkout_form() -> rx.Component:
     return rx.el.div(
         rx.el.h1("Checkout", class_name="text-3xl font-bold mb-2"),
         rx.el.p(
-            "Please provide your email to complete the order via WhatsApp.",
+            "Please provide your details to complete the order via WhatsApp.",
             class_name="text-gray-600 mb-6",
         ),
         rx.el.form(
             rx.el.div(
-                rx.el.label(
-                    "Email Address",
-                    html_for="email",
-                    class_name="block text-sm font-medium text-gray-700",
+                rx.el.div(
+                    rx.el.label(
+                        "Full Name",
+                        html_for="name",
+                        class_name="block text-sm font-medium text-gray-700",
+                    ),
+                    rx.el.input(
+                        id="name",
+                        name="name",
+                        type="text",
+                        placeholder="John Doe",
+                        class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        required=True,
+                    ),
                 ),
-                rx.el.input(
-                    id="email",
-                    name="email",
-                    type="email",
-                    placeholder="you@example.com",
-                    class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
-                    required=True,
+                rx.el.div(
+                    rx.el.label(
+                        "Phone Number",
+                        html_for="phone",
+                        class_name="block text-sm font-medium text-gray-700",
+                    ),
+                    rx.el.input(
+                        id="phone",
+                        name="phone",
+                        type="tel",
+                        placeholder="08012345678",
+                        class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        required=True,
+                    ),
                 ),
+                rx.el.div(
+                    rx.el.label(
+                        "Email Address",
+                        html_for="email",
+                        class_name="block text-sm font-medium text-gray-700",
+                    ),
+                    rx.el.input(
+                        id="email",
+                        name="email",
+                        type="email",
+                        placeholder="you@example.com",
+                        class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        required=True,
+                    ),
+                ),
+                class_name="space-y-4",
             ),
             rx.el.button(
                 "Complete Order on WhatsApp",
@@ -65,6 +98,7 @@ def checkout_form() -> rx.Component:
                 class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
             ),
             on_submit=State.process_checkout,
+            reset_on_submit=True,
             class_name="w-full",
         ),
         class_name="w-full lg:w-3/5 pr-0 lg:pr-12",
