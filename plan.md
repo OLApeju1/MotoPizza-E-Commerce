@@ -131,37 +131,70 @@
 - [x] Test message generation with new phone number
 - [x] Confirm all WhatsApp links redirect to 07080234820
 
+## Phase 13: Security Hardening and Code Cleanup ✅
+- [x] Move admin credentials from hardcoded values to environment variables
+- [x] Update AuthState to use os.getenv() for ADMIN_USERNAME and ADMIN_PASSWORD_HASH
+- [x] Add fallback defaults for development (username: "admin", password: "admin")
+- [x] Remove unused variables:
+  - Remove redirect_to variable from AuthState
+  - Remove unused token generation code
+  - Remove unused username/password state variables
+- [x] Improve error messages:
+  - Use generic "Invalid credentials" message
+  - Don't reveal if username or password is wrong
+- [x] Add security documentation:
+  - Add comments explaining demo-only authentication
+  - Add TODO comments for production requirements
+  - Document environment variable setup
+- [x] Test authentication functionality after changes
+- [x] Verify login page still works correctly
+
 ---
 
-**Current Status**: ✅ Phase 12 complete! WhatsApp phone number updated and verified.
+**Current Status**: ✅ Phase 13 complete! Security vulnerabilities removed and code cleaned up.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
-- ✅ Admin authentication and authorization system
+- ✅ **Secure admin authentication with environment variable support**
+- ✅ **Removed unnecessary code and security vulnerabilities**
 - ✅ Protected admin routes and API endpoints
 - ✅ Enhanced customer data collection (name, phone, email)
 - ✅ Complete customer profiles in admin CRM
-- ✅ **WhatsApp integration with phone number 07080234820**
-- ✅ **Personalized WhatsApp messages with customer info**
+- ✅ WhatsApp integration with phone number 07080234820
+- ✅ Personalized WhatsApp messages with customer info
 - ✅ Admin CRM page with comprehensive customer data
 - ✅ Complete product and content management system
-- ✅ Secure event handlers with authentication checks
+- ✅ **Clean codebase with security best practices**
 
-**WhatsApp Integration Details**:
-- 📱 **Phone Number**: 07080234820
-- ✅ **Checkout Flow**: Sends complete order details with customer name
-- ✅ **Message Format**: Includes items, quantities, prices, total, and customer name
-- ✅ **URL Encoding**: Proper encoding for all special characters
-- ✅ **Tested & Verified**: All WhatsApp links working correctly
+**Security Improvements**:
+- 🔒 **Environment Variables**: Admin credentials now use ADMIN_USERNAME and ADMIN_PASSWORD_HASH from .env
+- 🧹 **Code Cleanup**: Removed unused variables (redirect_to, token, username, password)
+- 🔐 **Generic Error Messages**: Authentication errors don't reveal username existence
+- 📝 **Documentation**: Added security warnings and setup instructions
+- ⚠️ **Demo Warning**: Clearly documented that this is demo-only authentication
 
-**Sample WhatsApp Message**:
+**Environment Setup**:
+To set custom admin credentials, create a `.env` file with:
 ```
-Hello MotoPizza! I'd like to place an order for the following items:
-
-- Classic Chocolate Fudge (x2) - ₦42000.00
-- Red Velvet Dream (x1) - ₦22500.00
-
-Total: ₦64500.00
-
-My name is Jane Smith. Please let me know the next steps. Thank you!
+ADMIN_USERNAME=your_username
+ADMIN_PASSWORD_HASH=your_password_hash
 ```
+
+To generate a password hash:
+```python
+import hashlib
+password = 'your_secure_password'
+hash_value = hashlib.sha256(password.encode()).hexdigest()
+print(hash_value)
+```
+
+**⚠️ Production Requirements**:
+For production deployment, implement:
+1. Backend database (PostgreSQL/MySQL) for data persistence
+2. Proper session management with secure JWT tokens
+3. Server-side authentication validation
+4. API rate limiting to prevent brute force attacks
+5. HTTPS encryption for all communications
+6. Secure password hashing (bcrypt/argon2 instead of SHA-256)
+
+**Note**: Current authentication is suitable for DEMO/DEVELOPMENT only!
