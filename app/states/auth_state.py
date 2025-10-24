@@ -27,7 +27,9 @@ class AuthState(rx.State):
         self.error_message = ""
 
     @rx.event
-    def login(self, form_data: dict[str, str]):
+    async def login(self, form_data: dict[str, str]):
+        from app.states.state import State
+
         self.username = form_data.get("username", "")
         self.password = form_data.get("password", "")
         if not self.username or not self.password:
@@ -39,21 +41,13 @@ class AuthState(rx.State):
             self.is_authenticated = True
             token = f"fake-token-for-{self.username}-{time.time()}"
             self.password = ""
-            if return_url == "/cart":
-                return rx.redirect("/admin/products")
             return rx.redirect("/admin/products")
         else:
+            if return_url == "/cart":
+                main_state = await self.get_state(State)
+                return rx.redirect(main_state.whatsapp_checkout_url, is_external=True)
             self.error_message = "Invalid username or password."
             self.password = ""
-            if return_url == "/cart":
-                from app.states.state import State
-
-                return (
-                    rx.toast.error(
-                        "Only admin can log in. Redirecting to WhatsApp checkout."
-                    ),
-                    rx.redirect(State.whatsapp_url),
-                )
 
     @rx.event
     def logout(self):

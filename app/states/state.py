@@ -157,6 +157,33 @@ class State(rx.State):
     def cart_total(self) -> float:
         return sum((item["product"]["price"] * item["quantity"] for item in self.cart))
 
+    @rx.var
+    def whatsapp_checkout_url(self) -> str:
+        """Generates the WhatsApp URL for checking out the current cart."""
+        if not self.cart:
+            return ""
+        message_lines = [
+            "Hello MotoPizza! I'd like to place an order for the following items:",
+            "",
+        ]
+        for item in self.cart:
+            product_name = item["product"]["name"]
+            quantity = item["quantity"]
+            price = item["product"]["price"]
+            line_total = price * quantity
+            message_lines.append(f"- {product_name} (x{quantity}) - ₦{line_total:.2f}")
+        message_lines.append("")
+        message_lines.append(f"Total: ₦{self.cart_total:.2f}")
+        message_lines.append("")
+        message_lines.append("Please let me know the next steps. Thank you!")
+        message = """
+""".join(message_lines)
+        phone_number = "1234567890"
+        import urllib.parse
+
+        encoded_message = urllib.parse.quote(message)
+        return f"https://wa.me/{phone_number}?text={encoded_message}"
+
     @rx.event
     def add_to_cart(self, product: Product):
         for item in self.cart:
