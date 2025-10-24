@@ -29,8 +29,10 @@ app.add_page(login_page, route="/login")
 app.add_page(product_detail_page, route="/products/[product_id]")
 from app.pages.checkout import checkout_page
 from app.pages.admin.customers import admin_customers_page
+from app.pages.admin.orders import admin_orders_page
 from app.pages.signup import signup_page
 
 app.add_page(checkout_page, route="/checkout")
 app.add_page(admin_customers_page, route="/admin/customers")
+app.add_page(admin_orders_page, route="/admin/orders")
 app.add_page(signup_page, route="/signup")

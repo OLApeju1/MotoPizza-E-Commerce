@@ -15,6 +15,7 @@ class User(TypedDict):
 class AuthState(rx.State):
     error_message: str = ""
     is_authenticated: bool = False
+    authenticated_user: User | None = None
     users: list[User] = []
 
     @rx.var
@@ -42,14 +43,21 @@ class AuthState(rx.State):
         return_url = self.router.page.params.get("return_url", "/")
         if username == admin_user and hashed_password == admin_pass_hash:
             self.is_authenticated = True
+            self.authenticated_user = {
+                "name": "Admin User",
+                "email": admin_user,
+                "phone": "N/A",
+                "password_hash": admin_pass_hash,
+            }
             self.error_message = ""
             main_state = await self.get_state(State)
-            if return_url == "/checkout":
-                return rx.redirect("/admin/products")
+            if return_url and return_url != "/":
+                return rx.redirect(return_url)
             return rx.redirect("/admin/products")
         for user in self.users:
             if user["email"] == username and user["password_hash"] == hashed_password:
                 self.is_authenticated = True
+                self.authenticated_user = user
                 self.error_message = ""
                 return rx.redirect(return_url)
         self.error_message = "Invalid credentials."
@@ -88,6 +96,7 @@ class AuthState(rx.State):
     @rx.event
     def logout(self):
         self.is_authenticated = False
+        self.authenticated_user = None
         return rx.redirect("/")
 
     @rx.event

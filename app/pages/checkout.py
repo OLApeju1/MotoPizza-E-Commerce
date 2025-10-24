@@ -1,5 +1,6 @@
 import reflex as rx
 from app.states.state import State
+from app.states.auth_state import AuthState
 from app.components.shared import page_layout
 
 
@@ -109,27 +110,35 @@ def checkout_page() -> rx.Component:
     return page_layout(
         rx.el.div(
             rx.cond(
-                State.cart_count > 0,
-                rx.el.div(
-                    checkout_form(),
-                    checkout_cart_summary(),
-                    class_name="container mx-auto p-8 flex flex-col-reverse lg:flex-row items-start gap-8",
+                AuthState.is_authenticated,
+                rx.cond(
+                    State.cart_count > 0,
+                    rx.el.div(
+                        checkout_form(),
+                        checkout_cart_summary(),
+                        class_name="container mx-auto p-8 flex flex-col-reverse lg:flex-row items-start gap-8",
+                    ),
+                    rx.el.div(
+                        rx.el.h2(
+                            "Your cart is empty.", class_name="text-2xl font-semibold"
+                        ),
+                        rx.el.p(
+                            "You can't checkout without any items.",
+                            class_name="text-gray-600 mt-2",
+                        ),
+                        rx.el.a(
+                            "Browse Products",
+                            href="/products",
+                            class_name="mt-4 inline-block bg-teal-500 text-white font-medium px-6 py-2 rounded-lg hover:bg-teal-600 transition-colors",
+                        ),
+                        class_name="text-center py-20 border-2 border-dashed rounded-lg container mx-auto my-8",
+                    ),
                 ),
                 rx.el.div(
-                    rx.el.h2(
-                        "Your cart is empty.", class_name="text-2xl font-semibold"
-                    ),
-                    rx.el.p(
-                        "You can't checkout without any items.",
-                        class_name="text-gray-600 mt-2",
-                    ),
-                    rx.el.a(
-                        "Browse Products",
-                        href="/products",
-                        class_name="mt-4 inline-block bg-teal-500 text-white font-medium px-6 py-2 rounded-lg hover:bg-teal-600 transition-colors",
-                    ),
-                    class_name="text-center py-20 border-2 border-dashed rounded-lg container mx-auto my-8",
+                    rx.el.p("Redirecting to login..."),
+                    class_name="min-h-[60vh] flex items-center justify-center",
                 ),
-            )
+            ),
+            on_mount=AuthState.check_auth,
         )
     )

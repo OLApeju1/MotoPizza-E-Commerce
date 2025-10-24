@@ -182,76 +182,112 @@
   - Duplicate email
   - Login with new user credentials
 
+## Phase 15: Authentication-Based Checkout Flow and Order Management ✅
+- [x] Update cart page to check authentication before checkout:
+  - If not authenticated → "Proceed to Checkout" button redirects to `/login?return_url=/cart`
+  - If authenticated → "Proceed to Checkout" button triggers direct WhatsApp redirect
+- [x] Create Order TypedDict with fields:
+  - id: int (auto-incrementing order ID)
+  - username: str (from authenticated user)
+  - email: str (from authenticated user)
+  - phone: str (from authenticated user)
+  - timestamp: str (date and time of order)
+  - cart_items: list[CartItem] (full cart contents)
+  - status: str (order status: "pending", "completed", etc.)
+- [x] Add orders list to State class for storing all customer orders
+- [x] Update process_checkout_and_redirect event handler to:
+  - Check if user is authenticated
+  - If not authenticated → redirect to login page
+  - If authenticated → store order with user details
+  - Generate WhatsApp URL with order details
+  - Clear cart after successful order placement
+  - Redirect to WhatsApp for order confirmation
+- [x] Create `/admin/orders` page showing all customer orders
+- [x] Build orders table with columns:
+  - Order ID (unique identifier)
+  - Timestamp (date and time)
+  - Username (customer name)
+  - Email (customer email)
+  - Phone (customer phone number)
+  - Items (list of ordered products with quantities)
+  - Status (order status badge with color coding)
+- [x] Add "Orders" link to admin navigation in header (visible when authenticated)
+- [x] Add authentication protection to orders page
+- [x] Style status badges:
+  - "pending" → yellow background
+  - "completed" → green background
+- [x] Update checkout page to remove form (no longer needed)
+- [x] Test complete checkout flow:
+  - Unauthenticated user → redirected to login
+  - Authenticated user → order stored and WhatsApp redirect
+
 ---
 
-**Current Status**: ✅ Phase 14 complete! User registration system fully implemented.
+**Current Status**: ✅ Phase 15 complete! Authentication-based checkout and order management system implemented.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
-- ✅ **User registration and authentication system**
-- ✅ **Multi-user support with secure password hashing**
-- ✅ **Comprehensive form validation for signup**
+- ✅ User registration and authentication system
+- ✅ **Authentication-based checkout flow**
+- ✅ **Order tracking and management system**
+- ✅ **Admin orders dashboard with comprehensive order data**
+- ✅ Multi-user support with secure password hashing
 - ✅ Secure admin authentication with environment variable support
 - ✅ Protected admin routes and API endpoints
-- ✅ Enhanced customer data collection (name, phone, email)
-- ✅ Complete customer profiles in admin CRM
 - ✅ WhatsApp integration with phone number 07080234820
-- ✅ Personalized WhatsApp messages with customer info
-- ✅ Admin CRM page with comprehensive customer data
 - ✅ Complete product and content management system
-- ✅ Clean codebase with security best practices
 
-**New User Registration Features**:
-- 📝 **Signup Page**: Beautiful registration form at `/signup`
-- ✅ **Form Validation**: All fields required, passwords must match, email format checked
-- 🔒 **Password Security**: SHA-256 hashing for all user passwords
-- 👥 **User Management**: Users stored in AuthState.users list
-- 🔐 **Duplicate Prevention**: Checks for existing email addresses
-- 🎯 **Seamless Login**: Users can login with email and password after registration
-- 🔄 **Navigation**: Login page links to signup, signup page links back to login
-- ✨ **UX Polish**: Success toasts, error messages, and smooth redirects
+**New Checkout Flow**:
+1. **Unauthenticated Users**:
+   - Click "Proceed to Checkout" → redirected to `/login?return_url=/cart`
+   - Must login or signup before placing orders
+   - After login → returned to cart page
+   
+2. **Authenticated Users**:
+   - Click "Proceed to Checkout" → order automatically stored
+   - Order includes: username, email, phone, timestamp, cart items, status
+   - Immediately redirected to WhatsApp with order details
+   - Cart is cleared after successful order placement
 
-**Registration Validations**:
-- ✅ All fields required (name, email, phone, password, confirm password)
-- ✅ Email format validation (must be valid email)
-- ✅ Password matching (password and confirm password must match)
-- ✅ Duplicate email prevention (no two users with same email)
-- ✅ Secure password hashing (SHA-256 before storage)
+**Order Management Features**:
+- 📊 **Admin Orders Dashboard**: View all customer orders at `/admin/orders`
+- 🆔 **Order Tracking**: Each order has unique ID and timestamp
+- 👤 **Customer Details**: Full customer information (name, email, phone)
+- 🛒 **Order Contents**: Complete list of items with quantities
+- 🏷️ **Status Tracking**: Visual status badges (pending, completed)
+- 🔒 **Protected Access**: Only authenticated admins can view orders
+
+**Order Data Structure**:
+```python
+Order = {
+    "id": 1,                           # Unique order ID
+    "username": "John Doe",            # Customer name
+    "email": "john@example.com",       # Customer email
+    "phone": "08012345678",            # Customer phone
+    "timestamp": "2024-01-15 10:30:00", # Order date/time
+    "cart_items": [...],               # Full cart contents
+    "status": "pending"                # Order status
+}
+```
+
+**Benefits of New System**:
+- ✅ **Better User Experience**: Seamless checkout for logged-in users
+- ✅ **Data Collection**: Automatic capture of customer information
+- ✅ **Order History**: Complete order tracking for admin
+- ✅ **Security**: Only authenticated users can place orders
+- ✅ **Efficiency**: No manual form filling for returning customers
 
 **User Flow**:
-1. New user clicks "Sign up" on login page
-2. Fills out registration form (name, email, phone, passwords)
-3. System validates all inputs and checks for duplicates
-4. Password is hashed and user is added to database
-5. Success message shown and redirected to login page
-6. User can now login with email and password
-7. Authenticated users can access checkout and place orders
+1. User adds items to cart
+2. Clicks "Proceed to Checkout"
+3. If not logged in → redirected to login/signup
+4. If logged in → order stored automatically with user details
+5. User redirected to WhatsApp with order summary
+6. Admin can view all orders in `/admin/orders` dashboard
 
-**Environment Setup**:
-To set custom admin credentials, create a `.env` file with:
-```
-ADMIN_USERNAME=your_username
-ADMIN_PASSWORD_HASH=your_password_hash
-```
-
-To generate a password hash:
-```python
-import hashlib
-password = 'your_secure_password'
-hash_value = hashlib.sha256(password.encode()).hexdigest()
-print(hash_value)
-```
-
-**⚠️ Production Requirements**:
-For production deployment, implement:
-1. Backend database (PostgreSQL/MySQL) for persistent user storage
-2. Proper session management with secure JWT tokens
-3. Server-side authentication validation
-4. API rate limiting to prevent brute force attacks
-5. HTTPS encryption for all communications
-6. Secure password hashing (bcrypt/argon2 instead of SHA-256)
-7. Email verification for new signups
-8. Password reset functionality
-9. Account management features (profile editing, password change)
-
-**Note**: Current authentication is suitable for DEMO/DEVELOPMENT only!
+**Admin Features**:
+- View all customer orders in one place
+- See order details including items and quantities
+- Track order status with visual badges
+- Access customer contact information
+- Monitor order timestamps and history

@@ -1,5 +1,7 @@
 import reflex as rx
+import reflex as rx
 from app.states.state import State
+from app.states.auth_state import AuthState
 from app.components.shared import page_layout
 
 
@@ -75,10 +77,18 @@ def cart_summary() -> rx.Component:
             ),
             class_name="flex justify-between py-2",
         ),
-        rx.el.a(
-            "Proceed to Checkout",
-            href="/checkout",
-            class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
+        rx.cond(
+            AuthState.is_authenticated,
+            rx.el.button(
+                "Proceed to Checkout",
+                on_click=State.process_checkout_and_redirect,
+                class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
+            ),
+            rx.el.a(
+                "Login to Checkout",
+                href="/login?return_url=/cart",
+                class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
+            ),
         ),
         class_name="w-full lg:w-1/3 p-6 bg-gray-50 rounded-lg shadow-sm border",
     )

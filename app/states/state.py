@@ -28,6 +28,16 @@ class CustomerEmail(TypedDict):
     cart_items: list[CartItem]
 
 
+class Order(TypedDict):
+    id: int
+    username: str
+    email: str
+    phone: str
+    timestamp: str
+    cart_items: list[CartItem]
+    status: str
+
+
 class State(rx.State):
     """The main state for the MotoPizza app."""
 
@@ -36,6 +46,7 @@ class State(rx.State):
     upload_progress: int = 0
     cart: list[CartItem] = []
     customer_emails: list[CustomerEmail] = []
+    orders: list[Order] = []
     products: list[Product] = [
         {
             "id": 1,
@@ -184,7 +195,7 @@ class State(rx.State):
         message_lines.append("")
         message_lines.append(f"Total: ₦{self.cart_total:.2f}")
         message_lines.append("")
-        customer_name = self.customer_emails[-1]["name"] if self.customer_emails else ""
+        customer_name = self.orders[-1]["username"] if self.orders else ""
         if customer_name:
             message_lines.append(
                 f"My name is {customer_name}. Please let me know the next steps. Thank you!"
@@ -231,6 +242,29 @@ class State(rx.State):
                 return
 
     @rx.event
+    async def process_checkout_and_redirect(self):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated or not auth_state.authenticated_user:
+            return rx.redirect("/login?return_url=/cart")
+        import datetime
+
+        user = auth_state.authenticated_user
+        new_order_id = max([o["id"] for o in self.orders] or [0]) + 1
+        order: Order = {
+            "id": new_order_id,
+            "username": user["name"],
+            "email": user["email"],
+            "phone": user["phone"],
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "cart_items": self.cart,
+            "status": "pending",
+        }
+        self.orders.append(order)
+        whatsapp_url = self.whatsapp_checkout_url
+        self.cart = []
+        return rx.redirect(whatsapp_url, is_external=True)
+
+    @rx.event
     def process_checkout(self, form_data: dict[str, str]):
         import datetime
 
@@ -239,16 +273,20 @@ class State(rx.State):
         email = form_data.get("email")
         if not all([name, phone, email]):
             return rx.toast.error("Name, phone, and email are required.")
-        customer_info = {
-            "name": name,
-            "phone": phone,
+        new_order_id = max([o["id"] for o in self.orders] or [0]) + 1
+        order: Order = {
+            "id": new_order_id,
+            "username": name,
             "email": email,
+            "phone": phone,
             "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "cart_items": self.cart,
+            "status": "pending",
         }
-        self.customer_emails.append(customer_info)
+        self.orders.append(order)
+        whatsapp_url = self.whatsapp_checkout_url
         self.cart = []
-        return rx.redirect(self.whatsapp_checkout_url, is_external=True)
+        return rx.redirect(whatsapp_url, is_external=True)
 
     @rx.event
     async def delete_product(self, product_id: int):
