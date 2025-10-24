@@ -1,7 +1,6 @@
 import reflex as rx
 from app.states.state import State, Product
 from app.states.auth_state import AuthState
-from app.states.customer_auth_state import CustomerAuthState
 
 
 def header() -> rx.Component:
@@ -12,8 +11,9 @@ def header() -> rx.Component:
                     rx.image(
                         src="/logo_bakery_slice.png",
                         alt="MotoPizza Logo",
-                        class_name="h-12 w-auto",
+                        class_name="h-8 w-auto",
                     ),
+                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2",
                 ),
                 href="/",
@@ -57,15 +57,6 @@ def header() -> rx.Component:
                             "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                         ),
                     ),
-                    rx.el.a(
-                        "Customers",
-                        href="/admin/customers",
-                        class_name=rx.cond(
-                            State.router.page.path == "/admin/customers",
-                            "px-3 py-2 text-sm font-bold text-teal-500",
-                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
-                        ),
-                    ),
                     class_name="flex items-center gap-2 border-l ml-4 pl-4",
                 ),
                 None,
@@ -84,7 +75,6 @@ def header() -> rx.Component:
                     href="/cart",
                     class_name="relative px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                 ),
-                customer_auth_button(),
                 auth_button(),
                 class_name="flex items-center gap-2",
             ),
@@ -102,8 +92,9 @@ def footer() -> rx.Component:
                     rx.image(
                         src="/logo_bakery_slice.png",
                         alt="MotoPizza Logo",
-                        class_name="h-12 w-auto",
+                        class_name="h-8 w-auto",
                     ),
+                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2 mb-4",
                 ),
                 rx.el.p(
@@ -188,28 +179,7 @@ def auth_button() -> rx.Component:
                 class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
             ),
         ),
-        class_name="ml-2",
-    )
-
-
-def customer_auth_button() -> rx.Component:
-    return rx.el.div(
-        rx.cond(
-            CustomerAuthState.is_customer_authenticated,
-            rx.el.div(
-                rx.el.span(
-                    f"Hi, {CustomerAuthState.current_customer['name'].split(' ')[0]}",
-                    class_name="text-sm font-medium text-gray-700",
-                ),
-                rx.el.button(
-                    "Logout",
-                    on_click=CustomerAuthState.customer_logout,
-                    class_name="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
-                ),
-                class_name="flex items-center gap-2 border-l ml-2 pl-2",
-            ),
-            None,
-        )
+        class_name="ml-4 border-l pl-4",
     )
 
 

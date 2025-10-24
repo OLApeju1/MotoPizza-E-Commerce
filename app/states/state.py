@@ -23,7 +23,6 @@ class CartItem(TypedDict):
 class State(rx.State):
     """The main state for the MotoPizza app."""
 
-    customers: list[dict] = []
     uploaded_files: list[str] = []
     is_uploading: bool = False
     upload_progress: int = 0
@@ -137,32 +136,18 @@ class State(rx.State):
         )
 
     @rx.var
-    async def whatsapp_message(self) -> str:
-        """Generates the WhatsApp message for the current order."""
-        from app.states.customer_auth_state import CustomerAuthState
-
-        customer_state = await self.get_state(CustomerAuthState)
-        customer_info = ""
-        if customer_state.current_customer:
-            customer = customer_state.current_customer
-            customer_info = f"Customer Name: {customer['name']}\nCustomer Email: {customer['email']}\nCustomer Phone: {customer['phone']}\n\n"
-        order_details = """
-""".join(
-            (
-                f"- {item['product']['name']} (x{item['quantity']}) @ \t2026{item['product']['price']:.2f} each"
-                for item in self.cart
-            )
-        )
-        total = f"{self.cart_total:.2f}"
-        message = f"Hello MotoPizza! I'd like to place an order:\n\n{customer_info}Order Details:\n{order_details}\n\nTotal: \t2026{total}"
-        return message.strip()
+    def whatsapp_message(self) -> str:
+        """Generates the WhatsApp message for the current product."""
+        if self.current_product:
+            product_name = self.current_product["name"]
+            return f"Hello MotoPizza! I'm interested in booking the {product_name}. Can we discuss the details?"
+        return "Hello MotoPizza! I'm interested in one of your products."
 
     @rx.var
-    async def whatsapp_url(self) -> str:
+    def whatsapp_url(self) -> str:
         """Generates the full WhatsApp URL."""
         phone_number = "1234567890"
-        message = await self.whatsapp_message
-        return f"https://wa.me/{phone_number}?text={message.replace(' ', '%20')}"
+        return f"https://wa.me/{phone_number}?text={self.whatsapp_message.replace(' ', '%20')}"
 
     @rx.var
     def cart_count(self) -> int:

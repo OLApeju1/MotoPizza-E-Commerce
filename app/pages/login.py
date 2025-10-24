@@ -11,9 +11,10 @@ def login_page() -> rx.Component:
                         rx.image(
                             src="/logo_bakery_slice.png",
                             alt="MotoPizza Logo",
-                            class_name="h-12 w-auto",
+                            class_name="h-10 w-auto",
                         ),
-                        class_name="flex items-center justify-center gap-2",
+                        rx.el.span("motopizza bite", class_name="font-bold text-xl"),
+                        class_name="flex items-center gap-2",
                     ),
                     href="/",
                 ),

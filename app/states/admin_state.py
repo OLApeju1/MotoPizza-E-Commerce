@@ -2,12 +2,9 @@ import reflex as rx
 from typing import TypedDict
 from app.states.state import State, Product
 from app.states.auth_state import AuthState
-from app.states.customer_auth_state import Customer
 import asyncio
 import time
 import logging
-import csv
-from datetime import datetime
 
 
 class AdminState(rx.State):
@@ -24,56 +21,6 @@ class AdminState(rx.State):
     new_ingredient: str = ""
     is_saving: bool = False
     is_editing: bool = False
-    customer_search_query: str = ""
-    customers: list[Customer] = []
-
-    @rx.event
-    async def load_customers(self):
-        main_state = await self.get_state(State)
-        self.customers = main_state.customers
-
-    @rx.var
-    async def filtered_customers(self) -> list[Customer]:
-        main_state = await self.get_state(State)
-        customers = sorted(
-            main_state.customers, key=lambda c: c["signup_date"], reverse=True
-        )
-        if not self.customer_search_query:
-            return customers
-        return [
-            c
-            for c in customers
-            if self.customer_search_query.lower() in c["name"].lower()
-            or self.customer_search_query.lower() in c["email"].lower()
-        ]
-
-    @rx.var
-    async def total_customers(self) -> int:
-        main_state = await self.get_state(State)
-        return len(main_state.customers)
-
-    @rx.event
-    def set_customer_search_query(self, query: str):
-        self.customer_search_query = query
-
-    @rx.event
-    async def export_customers_csv(self) -> rx.event.EventSpec:
-        state = await self.get_state(State)
-        if not state.customers:
-            return rx.toast.error("No customers to export.")
-        output_filename = (
-            f"motopizza_customers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-        )
-        upload_dir = rx.get_upload_dir()
-        upload_dir.mkdir(parents=True, exist_ok=True)
-        output_path = upload_dir / output_filename
-        with open(output_path, "w", newline="") as csvfile:
-            fieldnames = ["email", "name", "phone", "signup_date"]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            for customer in state.customers:
-                writer.writerow(customer)
-        return rx.download(url=f"/_upload/{output_filename}")
 
     @rx.event
     def set_product_form_field(self, field: str, value):
@@ -121,12 +68,6 @@ class AdminState(rx.State):
     def set_editing_product(self, product: Product):
         self.product_form = product.copy()
         self.is_editing = True
-
-    @rx.event
-    async def check_auth(self):
-        auth_state = await self.get_state(AuthState)
-        if not auth_state.is_authenticated:
-            return rx.redirect("/login")
 
     @rx.event
     async def handle_product_image_upload(self, files: list[rx.UploadFile]):

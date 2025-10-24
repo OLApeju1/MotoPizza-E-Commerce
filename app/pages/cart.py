@@ -1,7 +1,5 @@
 import reflex as rx
-import reflex as rx
 from app.states.state import State
-from app.states.customer_auth_state import CustomerAuthState
 from app.components.shared import page_layout
 
 
@@ -79,11 +77,8 @@ def cart_summary() -> rx.Component:
         ),
         rx.el.a(
             "Proceed to Checkout",
-            href=rx.cond(
-                CustomerAuthState.is_customer_authenticated,
-                "/checkout",
-                "/checkout/login",
-            ),
+            href=State.whatsapp_url,
+            target="_blank",
             class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
         ),
         class_name="w-full lg:w-1/3 p-6 bg-gray-50 rounded-lg shadow-sm border",

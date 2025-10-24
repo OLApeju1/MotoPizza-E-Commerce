@@ -276,6 +276,6 @@ def admin_products_page() -> rx.Component:
                     class_name="min-h-[60vh] flex items-center justify-center",
                 ),
             ),
-            on_mount=AdminState.check_auth,
+            on_mount=AuthState.check_auth,
         )
     )
