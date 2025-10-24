@@ -71,10 +71,6 @@ class AdminState(rx.State):
 
     @rx.event
     async def handle_product_image_upload(self, files: list[rx.UploadFile]):
-        auth_state = await self.get_state(AuthState)
-        if not auth_state.is_authenticated:
-            yield rx.toast.error("You must be logged in to upload images.")
-            return
         if not files:
             return
         upload_data = await files[0].read()
@@ -86,10 +82,6 @@ class AdminState(rx.State):
 
     @rx.event
     async def save_product(self, form_data: dict[str, str]):
-        auth_state = await self.get_state(AuthState)
-        if not auth_state.is_authenticated:
-            yield rx.toast.error("You must be logged in to save products.")
-            return
         self.is_saving = True
         yield
         for field in ["name", "description", "category", "full_description"]:
