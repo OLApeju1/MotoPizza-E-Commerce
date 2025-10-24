@@ -173,11 +173,7 @@ def auth_button() -> rx.Component:
                 on_click=AuthState.logout,
                 class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
             ),
-            rx.el.a(
-                "Admin Login",
-                href="/login",
-                class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
-            ),
+            None,
         ),
         class_name="ml-4 border-l pl-4",
     )
