@@ -2,9 +2,12 @@ import reflex as rx
 from typing import TypedDict
 from app.states.state import State, Product
 from app.states.auth_state import AuthState
+from app.states.customer_auth_state import Customer
 import asyncio
 import time
 import logging
+import csv
+from datetime import datetime
 
 
 class AdminState(rx.State):
@@ -21,6 +24,56 @@ class AdminState(rx.State):
     new_ingredient: str = ""
     is_saving: bool = False
     is_editing: bool = False
+    customer_search_query: str = ""
+    customers: list[Customer] = []
+
+    @rx.event
+    async def load_customers(self):
+        main_state = await self.get_state(State)
+        self.customers = main_state.customers
+
+    @rx.var
+    async def filtered_customers(self) -> list[Customer]:
+        main_state = await self.get_state(State)
+        customers = sorted(
+            main_state.customers, key=lambda c: c["signup_date"], reverse=True
+        )
+        if not self.customer_search_query:
+            return customers
+        return [
+            c
+            for c in customers
+            if self.customer_search_query.lower() in c["name"].lower()
+            or self.customer_search_query.lower() in c["email"].lower()
+        ]
+
+    @rx.var
+    async def total_customers(self) -> int:
+        main_state = await self.get_state(State)
+        return len(main_state.customers)
+
+    @rx.event
+    def set_customer_search_query(self, query: str):
+        self.customer_search_query = query
+
+    @rx.event
+    async def export_customers_csv(self) -> rx.event.EventSpec:
+        state = await self.get_state(State)
+        if not state.customers:
+            return rx.toast.error("No customers to export.")
+        output_filename = (
+            f"motopizza_customers_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        )
+        upload_dir = rx.get_upload_dir()
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        output_path = upload_dir / output_filename
+        with open(output_path, "w", newline="") as csvfile:
+            fieldnames = ["email", "name", "phone", "signup_date"]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for customer in state.customers:
+                writer.writerow(customer)
+        return rx.download(url=f"/_upload/{output_filename}")
 
     @rx.event
     def set_product_form_field(self, field: str, value):
@@ -70,6 +123,12 @@ class AdminState(rx.State):
         self.is_editing = True
 
     @rx.event
+    async def check_auth(self):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            return rx.redirect("/login")
+
+    @rx.event
     async def handle_product_image_upload(self, files: list[rx.UploadFile]):
         auth_state = await self.get_state(AuthState)
         if not auth_state.is_authenticated:
@@ -92,12 +151,10 @@ class AdminState(rx.State):
             return
         self.is_saving = True
         yield
-        if form_data.get("new_ingredient"):
-            self.set_new_ingredient(form_data["new_ingredient"])
         for field in ["name", "description", "category", "full_description"]:
             if field in form_data:
                 self.product_form[field] = form_data[field]
-        if "price" in form_data:
+        if "price" in form_data and form_data["price"]:
             self.set_price(form_data["price"])
         main_state = await self.get_state(State)
         products = main_state.products
@@ -106,23 +163,22 @@ class AdminState(rx.State):
             or self.product_form["price"] <= 0
             or (not self.product_form["image"])
         ):
-            yield rx.toast.error("Name, price, and image are required.")
             self.is_saving = False
+            yield rx.toast.error("Name, price, and image are required.")
             return
         product_to_save = self.product_form.copy()
         if self.is_editing:
-            index_to_update = -1
-            for i, p in enumerate(products):
-                if p["id"] == product_to_save["id"]:
-                    index_to_update = i
-                    break
+            index_to_update = next(
+                (i for i, p in enumerate(products) if p["id"] == product_to_save["id"]),
+                -1,
+            )
             if index_to_update != -1:
                 main_state.products[index_to_update] = product_to_save
                 yield rx.toast.success("Product updated successfully!")
             else:
                 yield rx.toast.error("Product not found for updating.")
         else:
-            new_id = max([p["id"] for p in products], default=0) + 1
+            new_id = max([p["id"] for p in products] or [0]) + 1
             product_to_save["id"] = new_id
             main_state.products.append(product_to_save)
             yield rx.toast.success("Product added successfully!")

@@ -160,7 +160,11 @@ def product_form() -> rx.Component:
                 rx.cond(
                     AdminState.product_form["image"] != "",
                     rx.image(
-                        src=rx.get_upload_url(AdminState.product_form["image"]),
+                        src=rx.cond(
+                            AdminState.product_form["image"].contains("https://"),
+                            AdminState.product_form["image"],
+                            rx.get_upload_url(AdminState.product_form["image"]),
+                        ),
                         class_name="h-24 w-auto rounded-md mt-2 border",
                     ),
                     None,
@@ -227,7 +231,7 @@ def product_table_row(product: Product) -> rx.Component:
             class_name="p-4 border-b",
         ),
         rx.el.td(product["name"], class_name="p-4 border-b font-medium"),
-        rx.el.td(f"\\[U+20A6]{product['price']:.2f}", class_name="p-4 border-b"),
+        rx.el.td(f"₦{product['price']:.2f}", class_name="p-4 border-b"),
         rx.el.td(
             rx.el.div(
                 rx.el.button(
@@ -272,6 +276,6 @@ def admin_products_page() -> rx.Component:
                     class_name="min-h-[60vh] flex items-center justify-center",
                 ),
             ),
-            on_mount=AuthState.check_auth,
+            on_mount=AdminState.check_auth,
         )
     )

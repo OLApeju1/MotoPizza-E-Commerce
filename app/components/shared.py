@@ -1,6 +1,7 @@
 import reflex as rx
 from app.states.state import State, Product
 from app.states.auth_state import AuthState
+from app.states.customer_auth_state import CustomerAuthState
 
 
 def header() -> rx.Component:
@@ -57,6 +58,15 @@ def header() -> rx.Component:
                             "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                         ),
                     ),
+                    rx.el.a(
+                        "Customers",
+                        href="/admin/customers",
+                        class_name=rx.cond(
+                            State.router.page.path == "/admin/customers",
+                            "px-3 py-2 text-sm font-bold text-teal-500",
+                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                        ),
+                    ),
                     class_name="flex items-center gap-2 border-l ml-4 pl-4",
                 ),
                 None,
@@ -75,6 +85,7 @@ def header() -> rx.Component:
                     href="/cart",
                     class_name="relative px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                 ),
+                customer_auth_button(),
                 auth_button(),
                 class_name="flex items-center gap-2",
             ),
@@ -179,7 +190,28 @@ def auth_button() -> rx.Component:
                 class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
             ),
         ),
-        class_name="ml-4 border-l pl-4",
+        class_name="ml-2",
+    )
+
+
+def customer_auth_button() -> rx.Component:
+    return rx.el.div(
+        rx.cond(
+            CustomerAuthState.is_customer_authenticated,
+            rx.el.div(
+                rx.el.span(
+                    f"Hi, {CustomerAuthState.current_customer['name'].split(' ')[0]}",
+                    class_name="text-sm font-medium text-gray-700",
+                ),
+                rx.el.button(
+                    "Logout",
+                    on_click=CustomerAuthState.customer_logout,
+                    class_name="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md",
+                ),
+                class_name="flex items-center gap-2 border-l ml-2 pl-2",
+            ),
+            None,
+        )
     )
 
 
@@ -222,7 +254,7 @@ def product_card(product: Product) -> rx.Component:
             ),
             class_name="group",
         ),
-        href=f"/products/{product['id']}",
+        href="/products/" + product["id"].to_string(),
     )
 
 

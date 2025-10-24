@@ -7,6 +7,9 @@ from app.pages.cart import cart_page
 from app.pages.admin.upload import upload_page
 from app.pages.admin.products import admin_products_page
 from app.pages.login import login_page
+from app.pages.checkout_login import checkout_login_page
+from app.pages.checkout import checkout_page
+from app.pages.admin.customers import admin_customers_page
 
 app = rx.App(
     theme=rx.theme(appearance="light"),
@@ -26,4 +29,7 @@ app.add_page(cart_page, route="/cart")
 app.add_page(upload_page, route="/admin/upload")
 app.add_page(admin_products_page, route="/admin/products")
 app.add_page(login_page, route="/login")
+app.add_page(checkout_login_page, route="/checkout/login")
+app.add_page(checkout_page, route="/checkout")
+app.add_page(admin_customers_page, route="/admin/customers")
 app.add_page(product_detail_page, route="/products/[product_id]")
