@@ -65,12 +65,19 @@ class AdminState(rx.State):
         return rx.clear_selected_files("product_image_upload")
 
     @rx.event
-    def set_editing_product(self, product: Product):
+    async def set_editing_product(self, product: Product):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            return (rx.toast.error("Unauthorized"), rx.redirect("/login"))
         self.product_form = product.copy()
         self.is_editing = True
 
     @rx.event
     async def handle_product_image_upload(self, files: list[rx.UploadFile]):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield (rx.toast.error("Unauthorized"), rx.redirect("/login"))
+            return
         if not files:
             return
         upload_data = await files[0].read()
@@ -82,6 +89,10 @@ class AdminState(rx.State):
 
     @rx.event
     async def save_product(self, form_data: dict[str, str]):
+        auth_state = await self.get_state(AuthState)
+        if not auth_state.is_authenticated:
+            yield (rx.toast.error("Unauthorized"), rx.redirect("/login"))
+            return
         self.is_saving = True
         yield
         for field in ["name", "description", "category", "full_description"]:
