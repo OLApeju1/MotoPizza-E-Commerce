@@ -85,17 +85,55 @@
 - [x] Add `is_external=True` parameter for external WhatsApp redirects
 - [x] Test all login scenarios: guest checkout, admin from cart, direct admin login, invalid login
 
+## Phase 10: Customer Email Collection and Marketing System ✅
+- [x] Add "Login" link to public header navigation (visible to all users)
+- [x] Create CustomerEmail TypedDict with email, timestamp, cart_items fields
+- [x] Add customer_emails list to State for storing customer data
+- [x] Create `/checkout` page with email input form and cart summary
+- [x] Implement process_checkout event handler to:
+  - Validate email input
+  - Store customer email with timestamp and cart items
+  - Clear cart after submission
+  - Redirect to WhatsApp with order details
+- [x] Create `/admin/customers` page showing collected customer emails
+- [x] Display customer data in table: email, timestamp, and cart items
+- [x] Add "Customers" link to admin navigation (visible when authenticated)
+- [x] Add authentication protection to customers page
+- [x] Update cart page to link "Proceed to Checkout" to `/checkout` route
+- [x] Add empty cart validation on checkout page
+
 ---
 
-**Current Status**: ✅ Phase 9 complete! All features implemented and tested.
+**Current Status**: ✅ Phase 10 complete! All features implemented and tested.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
 - ✅ Admin authentication and authorization system
 - ✅ Protected admin routes and API endpoints
-- ✅ Guest checkout via WhatsApp (no login required)
-- ✅ Admin can access management pages from cart
-- ✅ Hidden admin UI elements from public navigation
-- ✅ Secure event handlers with authentication checks
-- ✅ Smart login flow based on user context (cart vs direct access)
+- ✅ Customer email collection during checkout
+- ✅ Marketing database of customer emails with purchase history
+- ✅ WhatsApp integration for order completion
+- ✅ Admin CRM page to view all customer emails
+- ✅ Login visible in public navigation
 - ✅ Complete product and content management system
+- ✅ Secure event handlers with authentication checks
+
+**User Flows**:
+
+**Guest Customer Checkout:**
+1. Browse products → Add to cart
+2. Click "Proceed to Checkout" → Checkout page
+3. Enter email address → Submit form
+4. Email stored in admin database → WhatsApp opens with order details
+
+**Admin Access:**
+1. Click "Login" in header → Login page
+2. Enter credentials (username: `admin`, password: `admin`)
+3. Access admin pages: Uploads, Products, Customers
+4. View customer emails and marketing data
+
+**Marketing Benefits:**
+- Collect customer emails automatically during checkout
+- View complete purchase history for each customer
+- Build email list for promotional campaigns
+- Track customer behavior and preferences

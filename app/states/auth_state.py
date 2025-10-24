@@ -41,11 +41,11 @@ class AuthState(rx.State):
             self.is_authenticated = True
             token = f"fake-token-for-{self.username}-{time.time()}"
             self.password = ""
+            main_state = await self.get_state(State)
+            if return_url == "/checkout":
+                return rx.redirect("/admin/products")
             return rx.redirect("/admin/products")
         else:
-            if return_url == "/cart":
-                main_state = await self.get_state(State)
-                return rx.redirect(main_state.whatsapp_checkout_url, is_external=True)
             self.error_message = "Invalid username or password."
             self.password = ""
 

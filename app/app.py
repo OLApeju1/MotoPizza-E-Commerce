@@ -27,3 +27,8 @@ app.add_page(upload_page, route="/admin/upload")
 app.add_page(admin_products_page, route="/admin/products")
 app.add_page(login_page, route="/login")
 app.add_page(product_detail_page, route="/products/[product_id]")
+from app.pages.checkout import checkout_page
+from app.pages.admin.customers import admin_customers_page
+
+app.add_page(checkout_page, route="/checkout")
+app.add_page(admin_customers_page, route="/admin/customers")

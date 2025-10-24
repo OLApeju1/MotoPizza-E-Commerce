@@ -77,7 +77,7 @@ def cart_summary() -> rx.Component:
         ),
         rx.el.a(
             "Proceed to Checkout",
-            href="/login?return_url=/cart",
+            href="/checkout",
             class_name="mt-6 w-full bg-teal-500 text-white text-center font-bold py-3 rounded-lg hover:bg-teal-600 transition-colors shadow-md",
         ),
         class_name="w-full lg:w-1/3 p-6 bg-gray-50 rounded-lg shadow-sm border",

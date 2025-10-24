@@ -36,32 +36,50 @@ def header() -> rx.Component:
                 ),
                 class_name="hidden md:flex items-center gap-2",
             ),
-            rx.cond(
-                AuthState.is_authenticated,
-                rx.el.div(
-                    rx.el.a(
-                        "Uploads",
-                        href="/admin/upload",
-                        class_name=rx.cond(
-                            State.router.page.path == "/admin/upload",
-                            "px-3 py-2 text-sm font-bold text-teal-500",
-                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
-                        ),
-                    ),
-                    rx.el.a(
-                        "Products",
-                        href="/admin/products",
-                        class_name=rx.cond(
-                            State.router.page.path == "/admin/products",
-                            "px-3 py-2 text-sm font-bold text-teal-500",
-                            "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
-                        ),
-                    ),
-                    class_name="flex items-center gap-2 border-l ml-4 pl-4",
-                ),
-                None,
-            ),
             rx.el.div(
+                rx.cond(
+                    AuthState.is_authenticated,
+                    rx.el.div(
+                        rx.el.a(
+                            "Uploads",
+                            href="/admin/upload",
+                            class_name=rx.cond(
+                                State.router.page.path == "/admin/upload",
+                                "px-3 py-2 text-sm font-bold text-teal-500",
+                                "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                            ),
+                        ),
+                        rx.el.a(
+                            "Products",
+                            href="/admin/products",
+                            class_name=rx.cond(
+                                State.router.page.path == "/admin/products",
+                                "px-3 py-2 text-sm font-bold text-teal-500",
+                                "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                            ),
+                        ),
+                        rx.el.a(
+                            "Customers",
+                            href="/admin/customers",
+                            class_name=rx.cond(
+                                State.router.page.path == "/admin/customers",
+                                "px-3 py-2 text-sm font-bold text-teal-500",
+                                "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                            ),
+                        ),
+                        rx.el.button(
+                            "Logout",
+                            on_click=AuthState.logout,
+                            class_name="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors",
+                        ),
+                        class_name="flex items-center gap-2 border-l ml-4 pl-4",
+                    ),
+                    rx.el.a(
+                        "Login",
+                        href="/login",
+                        class_name="px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
+                    ),
+                ),
                 rx.el.a(
                     rx.icon("shopping-cart", class_name="h-5 w-5"),
                     rx.cond(

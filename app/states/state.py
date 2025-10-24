@@ -20,6 +20,12 @@ class CartItem(TypedDict):
     quantity: int
 
 
+class CustomerEmail(TypedDict):
+    email: str
+    timestamp: str
+    cart_items: list[CartItem]
+
+
 class State(rx.State):
     """The main state for the MotoPizza app."""
 
@@ -27,6 +33,7 @@ class State(rx.State):
     is_uploading: bool = False
     upload_progress: int = 0
     cart: list[CartItem] = []
+    customer_emails: list[CustomerEmail] = []
     products: list[Product] = [
         {
             "id": 1,
@@ -214,6 +221,22 @@ class State(rx.State):
                         i for i in self.cart if i["product"]["id"] != product_id
                     ]
                 return
+
+    @rx.event
+    def process_checkout(self, form_data: dict[str, str]):
+        import datetime
+
+        email = form_data.get("email")
+        if not email:
+            return rx.toast.error("Email is required to proceed.")
+        customer_info = {
+            "email": email,
+            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "cart_items": self.cart,
+        }
+        self.customer_emails.append(customer_info)
+        self.cart = []
+        return rx.redirect(self.whatsapp_checkout_url, is_external=True)
 
     @rx.event
     async def delete_product(self, product_id: int):
