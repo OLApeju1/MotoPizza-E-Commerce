@@ -1,15 +1,29 @@
 import reflex as rx
 import hashlib
 import os
+from typing import TypedDict
+import re
+
+
+class User(TypedDict):
+    name: str
+    email: str
+    phone: str
+    password_hash: str
 
 
 class AuthState(rx.State):
     error_message: str = ""
     is_authenticated: bool = False
+    users: list[User] = []
 
     @rx.var
     def token_is_valid(self) -> bool:
         return self.is_authenticated
+
+    @rx.event
+    def clear_error_message(self):
+        self.error_message = ""
 
     @rx.event
     async def login(self, form_data: dict[str, str]):
@@ -33,8 +47,43 @@ class AuthState(rx.State):
             if return_url == "/checkout":
                 return rx.redirect("/admin/products")
             return rx.redirect("/admin/products")
-        else:
-            self.error_message = "Invalid credentials."
+        for user in self.users:
+            if user["email"] == username and user["password_hash"] == hashed_password:
+                self.is_authenticated = True
+                self.error_message = ""
+                return rx.redirect(return_url)
+        self.error_message = "Invalid credentials."
+
+    @rx.event
+    async def signup(self, form_data: dict[str, str]):
+        self.error_message = ""
+        name = form_data.get("name", "")
+        email = form_data.get("email", "").lower()
+        phone = form_data.get("phone", "")
+        password = form_data.get("password", "")
+        confirm_password = form_data.get("confirm_password", "")
+        if not all([name, email, phone, password, confirm_password]):
+            self.error_message = "All fields are required."
+            return
+        if password != confirm_password:
+            self.error_message = "Passwords do not match."
+            return
+        if not re.match("[^@]+@[^@]+\\.[^@]+", email):
+            self.error_message = "Invalid email address."
+            return
+        if any((user["email"] == email for user in self.users)):
+            self.error_message = "Email already in use."
+            return
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        new_user: User = {
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "password_hash": hashed_password,
+        }
+        self.users.append(new_user)
+        yield rx.toast.success("Signup successful! Please log in.")
+        yield rx.redirect("/login")
 
     @rx.event
     def logout(self):

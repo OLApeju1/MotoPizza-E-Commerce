@@ -2,7 +2,7 @@ import reflex as rx
 from app.states.auth_state import AuthState
 
 
-def login_page() -> rx.Component:
+def signup_page() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
@@ -19,7 +19,8 @@ def login_page() -> rx.Component:
                     href="/",
                 ),
                 rx.el.h2(
-                    "Admin Login", class_name="mt-6 text-2xl font-bold text-gray-900"
+                    "Create an Account",
+                    class_name="mt-6 text-2xl font-bold text-gray-900",
                 ),
                 class_name="text-center",
             ),
@@ -27,14 +28,43 @@ def login_page() -> rx.Component:
                 rx.el.div(
                     rx.el.div(
                         rx.el.label(
-                            "Username",
-                            html_for="username",
+                            "Full Name",
+                            html_for="name",
                             class_name="block text-sm font-medium text-gray-700",
                         ),
                         rx.el.input(
-                            id="username",
-                            name="username",
+                            id="name",
+                            name="name",
                             type="text",
+                            placeholder="John Doe",
+                            class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        ),
+                    ),
+                    rx.el.div(
+                        rx.el.label(
+                            "Email Address",
+                            html_for="email",
+                            class_name="block text-sm font-medium text-gray-700",
+                        ),
+                        rx.el.input(
+                            id="email",
+                            name="email",
+                            type="email",
+                            placeholder="you@example.com",
+                            class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        ),
+                    ),
+                    rx.el.div(
+                        rx.el.label(
+                            "Phone Number",
+                            html_for="phone",
+                            class_name="block text-sm font-medium text-gray-700",
+                        ),
+                        rx.el.input(
+                            id="phone",
+                            name="phone",
+                            type="tel",
+                            placeholder="08012345678",
                             class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
                         ),
                     ),
@@ -51,6 +81,19 @@ def login_page() -> rx.Component:
                             class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
                         ),
                     ),
+                    rx.el.div(
+                        rx.el.label(
+                            "Confirm Password",
+                            html_for="confirm_password",
+                            class_name="block text-sm font-medium text-gray-700",
+                        ),
+                        rx.el.input(
+                            id="confirm_password",
+                            name="confirm_password",
+                            type="password",
+                            class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        ),
+                    ),
                     rx.cond(
                         AuthState.error_message != "",
                         rx.el.p(
@@ -62,19 +105,19 @@ def login_page() -> rx.Component:
                     class_name="space-y-4",
                 ),
                 rx.el.button(
-                    "Sign in",
+                    "Sign up",
                     type="submit",
                     class_name="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mt-6",
                 ),
-                on_submit=AuthState.login,
+                on_submit=AuthState.signup,
                 reset_on_submit=True,
                 class_name="mt-8",
             ),
             rx.el.p(
-                "Don't have an account? ",
+                "Already have an account? ",
                 rx.el.a(
-                    "Sign up",
-                    href="/signup",
+                    "Log in",
+                    href="/login",
                     class_name="font-medium text-teal-600 hover:text-teal-500",
                 ),
                 class_name="mt-4 text-center text-sm text-gray-600",
@@ -82,4 +125,5 @@ def login_page() -> rx.Component:
             class_name="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg border border-gray-200",
         ),
         class_name="min-h-screen flex items-center justify-center bg-gray-50 font-['Lato']",
+        on_mount=AuthState.clear_error_message,
     )

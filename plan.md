@@ -149,14 +149,49 @@
 - [x] Test authentication functionality after changes
 - [x] Verify login page still works correctly
 
+## Phase 14: User Registration System ✅
+- [x] Create signup page at `/signup` route
+- [x] Build registration form with fields:
+  - Full Name (text input with placeholder "John Doe")
+  - Email Address (email input with placeholder "you@example.com")
+  - Phone Number (tel input with placeholder "08012345678")
+  - Password (password input)
+  - Confirm Password (password input)
+- [x] Add "Sign up" submit button with teal styling matching login page
+- [x] Add "Already have an account? Log in" link at bottom of form
+- [x] Implement signup event handler in AuthState with validations:
+  - Check all fields are filled (name, email, phone, password, confirm_password)
+  - Verify passwords match
+  - Validate email format using regex
+  - Check for duplicate email addresses
+  - Hash password with SHA-256 before storing
+- [x] Add User TypedDict with fields: name, email, phone, password_hash
+- [x] Store new users in AuthState.users list
+- [x] Display error messages for validation failures
+- [x] Show success toast and redirect to login page after successful signup
+- [x] Add "Don't have an account? Sign up" link to login page
+- [x] Update login handler to support user authentication:
+  - Check if credentials match any user in users list
+  - Support login with email as username
+  - Maintain existing admin authentication
+- [x] Test all validation scenarios:
+  - Valid signup with all fields
+  - Missing required fields
+  - Mismatched passwords
+  - Invalid email format
+  - Duplicate email
+  - Login with new user credentials
+
 ---
 
-**Current Status**: ✅ Phase 13 complete! Security vulnerabilities removed and code cleaned up.
+**Current Status**: ✅ Phase 14 complete! User registration system fully implemented.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
-- ✅ **Secure admin authentication with environment variable support**
-- ✅ **Removed unnecessary code and security vulnerabilities**
+- ✅ **User registration and authentication system**
+- ✅ **Multi-user support with secure password hashing**
+- ✅ **Comprehensive form validation for signup**
+- ✅ Secure admin authentication with environment variable support
 - ✅ Protected admin routes and API endpoints
 - ✅ Enhanced customer data collection (name, phone, email)
 - ✅ Complete customer profiles in admin CRM
@@ -164,14 +199,33 @@
 - ✅ Personalized WhatsApp messages with customer info
 - ✅ Admin CRM page with comprehensive customer data
 - ✅ Complete product and content management system
-- ✅ **Clean codebase with security best practices**
+- ✅ Clean codebase with security best practices
 
-**Security Improvements**:
-- 🔒 **Environment Variables**: Admin credentials now use ADMIN_USERNAME and ADMIN_PASSWORD_HASH from .env
-- 🧹 **Code Cleanup**: Removed unused variables (redirect_to, token, username, password)
-- 🔐 **Generic Error Messages**: Authentication errors don't reveal username existence
-- 📝 **Documentation**: Added security warnings and setup instructions
-- ⚠️ **Demo Warning**: Clearly documented that this is demo-only authentication
+**New User Registration Features**:
+- 📝 **Signup Page**: Beautiful registration form at `/signup`
+- ✅ **Form Validation**: All fields required, passwords must match, email format checked
+- 🔒 **Password Security**: SHA-256 hashing for all user passwords
+- 👥 **User Management**: Users stored in AuthState.users list
+- 🔐 **Duplicate Prevention**: Checks for existing email addresses
+- 🎯 **Seamless Login**: Users can login with email and password after registration
+- 🔄 **Navigation**: Login page links to signup, signup page links back to login
+- ✨ **UX Polish**: Success toasts, error messages, and smooth redirects
+
+**Registration Validations**:
+- ✅ All fields required (name, email, phone, password, confirm password)
+- ✅ Email format validation (must be valid email)
+- ✅ Password matching (password and confirm password must match)
+- ✅ Duplicate email prevention (no two users with same email)
+- ✅ Secure password hashing (SHA-256 before storage)
+
+**User Flow**:
+1. New user clicks "Sign up" on login page
+2. Fills out registration form (name, email, phone, passwords)
+3. System validates all inputs and checks for duplicates
+4. Password is hashed and user is added to database
+5. Success message shown and redirected to login page
+6. User can now login with email and password
+7. Authenticated users can access checkout and place orders
 
 **Environment Setup**:
 To set custom admin credentials, create a `.env` file with:
@@ -190,11 +244,14 @@ print(hash_value)
 
 **⚠️ Production Requirements**:
 For production deployment, implement:
-1. Backend database (PostgreSQL/MySQL) for data persistence
+1. Backend database (PostgreSQL/MySQL) for persistent user storage
 2. Proper session management with secure JWT tokens
 3. Server-side authentication validation
 4. API rate limiting to prevent brute force attacks
 5. HTTPS encryption for all communications
 6. Secure password hashing (bcrypt/argon2 instead of SHA-256)
+7. Email verification for new signups
+8. Password reset functionality
+9. Account management features (profile editing, password change)
 
 **Note**: Current authentication is suitable for DEMO/DEVELOPMENT only!
