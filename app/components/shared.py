@@ -10,11 +10,10 @@ def header() -> rx.Component:
             rx.el.a(
                 rx.el.div(
                     rx.image(
-                        src="/logo_bakery_slice.png",
+                        src="placeholder.svg",
                         alt="MotoPizza Logo",
-                        class_name="h-8 w-auto",
+                        class_name="h-12 w-auto",
                     ),
-                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2",
                 ),
                 href="/",
@@ -101,11 +100,10 @@ def footer() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.image(
-                        src="/logo_bakery_slice.png",
+                        src="placeholder.svg",
                         alt="MotoPizza Logo",
-                        class_name="h-8 w-auto",
+                        class_name="h-12 w-auto",
                     ),
-                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2 mb-4",
                 ),
                 rx.el.p(
