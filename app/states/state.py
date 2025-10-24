@@ -155,7 +155,7 @@ class State(rx.State):
     @rx.var
     def whatsapp_url(self) -> str:
         """Generates the full WhatsApp URL."""
-        phone_number = "1234567890"
+        phone_number = "07080234820"
         return f"https://wa.me/{phone_number}?text={self.whatsapp_message.replace(' ', '%20')}"
 
     @rx.var
@@ -193,7 +193,7 @@ class State(rx.State):
             message_lines.append("Please let me know the next steps. Thank you!")
         message = """
 """.join(message_lines)
-        phone_number = "1234567890"
+        phone_number = "07080234820"
         import urllib.parse
 
         encoded_message = urllib.parse.quote(message)
