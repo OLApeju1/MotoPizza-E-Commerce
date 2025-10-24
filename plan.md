@@ -269,110 +269,133 @@
   - Prevent main admin deletion
   - Restrict management to main admin only
 
+## Phase 17: Unified Authentication Flow with Admin Auto-Detection ✅
+- [x] Update AuthState.login event handler to check admins FIRST:
+  - Check if username matches any admin account
+  - Verify password hash matches admin password
+  - If admin match → set is_authenticated, redirect to /admin/products
+  - If no admin match → check regular users list
+  - If user match → set is_authenticated, redirect to return_url or home
+  - If no match at all → show "Invalid credentials" error
+- [x] Update login page UI and messaging:
+  - Change title to "Login to Your Account"
+  - Update description to indicate this is for all users
+  - Keep existing form structure (username, password fields)
+  - Maintain "Don't have an account? Sign up" link
+- [x] Keep signup page for regular users only:
+  - No changes to signup flow
+  - Users created via signup do NOT get admin access
+  - Only admins list in AuthState has admin privileges
+- [x] Admin detection logic:
+  - Admins checked FIRST before users
+  - Admin credentials automatically recognized
+  - Automatic redirect to admin area (/admin/products)
+  - No manual "admin login" vs "user login" needed
+- [x] Test authentication flow scenarios:
+  - Admin login with admin credentials → redirect to /admin/products ✅
+  - User login with user credentials → redirect to home or return_url ✅
+  - Invalid credentials → show error message ✅
+  - Signup creates regular user (not admin) ✅
+  - Admin can access all admin pages after login ✅
+
 ---
 
-**Current Status**: ✅ Phase 16 complete! Admin management system with role-based access control implemented.
+**Current Status**: ✅ Phase 17 complete! Unified authentication system with automatic admin detection implemented.
 
 **Application Features**:
 - ✅ Full e-commerce functionality with shopping cart
 - ✅ User registration and authentication system
+- ✅ **Unified login page for both admins and users**
+- ✅ **Automatic admin detection and routing**
 - ✅ Authentication-based checkout and order management
-- ✅ **Multi-admin support with role-based access control**
-- ✅ **Admin user management system (add/remove admins)**
-- ✅ **Main admin protection (cannot be deleted)**
+- ✅ Multi-admin support with role-based access control
+- ✅ Admin user management system (add/remove admins)
+- ✅ Main admin protection (cannot be deleted)
 - ✅ Secure password hashing and validation
 - ✅ Protected admin routes and API endpoints
 - ✅ WhatsApp integration with phone number 07080234820
 - ✅ Complete product and content management system
 
-**Admin Management Features**:
-- 🔐 **Role-Based Access Control**: Only main admin can manage other admins
-- ➕ **Add Admins**: Create new admin accounts with secure passwords
-- 🗑️ **Remove Admins**: Delete admin accounts (except main admin)
-- 🛡️ **Main Admin Protection**: Cannot delete the primary admin account
-- ✅ **Validation**: Password matching, duplicate username checking
-- 📊 **Admin Table**: View all admin accounts with creation timestamps
-- 🔒 **Authentication Required**: Only authenticated admins can access page
+**Unified Authentication System**:
 
-**Admin TypedDict Structure**:
-```python
-Admin = {
-    "username": "johndoe",                    # Admin username
-    "password_hash": "sha256_hash...",        # Hashed password
-    "created_at": "2024-01-15 10:30"         # Creation timestamp
-}
+**Login Flow:**
+1. User goes to `/login` page (single login page for everyone)
+2. Enters username and password
+3. System checks if credentials are admin credentials (checked FIRST)
+   - If admin → redirect to `/admin/products`
+   - If not admin → check if regular user
+   - If user → redirect to home page or return_url
+   - If neither → show "Invalid credentials" error
+
+**Key Benefits:**
+- 🎯 **Single Login Page**: One unified login for admins and users
+- 🔍 **Auto-Detection**: System automatically detects if user is admin
+- 🚀 **Smart Routing**: Admins go to admin area, users go to public site
+- 🔒 **Secure**: Admin credentials checked first, no admin/user confusion
+- 💡 **User-Friendly**: No need to choose "admin login" vs "user login"
+
+**User Types:**
+1. **Admins** (from `admins` list in AuthState):
+   - Created via `/admin/users` page by main admin
+   - Login → automatically redirected to `/admin/products`
+   - Have access to all admin pages
+   - Phone shows as "N/A" in authenticated_user
+   
+2. **Regular Users** (from `users` list in AuthState):
+   - Created via `/signup` page
+   - Login → redirected to home page or return_url
+   - Can browse products, add to cart, checkout
+   - Full profile with name, email, phone
+
+**Authentication Priority:**
+```
+Login attempt
+    ↓
+Check admins list FIRST
+    ↓
+Admin found? → Redirect to /admin/products
+    ↓
+Check users list NEXT
+    ↓
+User found? → Redirect to home/return_url
+    ↓
+No match? → Show "Invalid credentials" error
 ```
 
-**Access Control**:
-- **Main Admin** (from ADMIN_USERNAME env variable):
-  - Can view all admins
-  - Can add new admins
-  - Can delete other admins
-  - Cannot be deleted
-  
-- **Regular Admins**:
-  - Can view admin list
-  - Cannot add new admins
-  - Cannot delete admins
-  - See "Only the main admin can manage users" message
+**Pages:**
+- **`/login`**: Universal login for admins AND users
+- **`/signup`**: Registration for regular users only (not admins)
+- **`/admin/products`**: Admin landing page after admin login
+- **`/`**: User landing page after user login
 
-**Admin Management Workflow**:
-1. Main admin logs in with credentials from environment variables
-2. Navigates to `/admin/users` page
-3. Sees list of all admin accounts in table
-4. Can add new admin by filling form:
-   - Enter username
-   - Enter password
-   - Confirm password
-   - Click "Add Admin"
-5. Can delete admin accounts:
-   - Click delete button for admin
-   - Confirm deletion in dialog
-   - Admin is removed from system
-6. Main admin account shows "Cannot Delete" label
+**Example Scenarios:**
 
-**Validation Rules**:
-- ✅ All fields required (username, password, confirm_password)
-- ✅ Passwords must match
-- ✅ Username must be unique
-- ✅ Password hashed with SHA-256 before storage
-- ✅ Main admin cannot be deleted
-- ✅ Only main admin can perform admin management
+**Scenario 1: Admin Login**
+- User: admin (from ADMIN_USERNAME env)
+- Password: admin (from ADMIN_PASSWORD_HASH env)
+- Result: ✅ Authenticated as admin → `/admin/products`
 
-**Security Features**:
-- 🔒 Page protected by authentication check
-- 🔐 Role-based access control (main admin only)
-- 🛡️ Main admin cannot be deleted
-- 🔑 Passwords hashed with SHA-256
-- ✅ Validation on all inputs
-- 🚫 Unauthorized users redirected to login
+**Scenario 2: Regular User Login**
+- User: jane@example.com (registered via signup)
+- Password: userpass123
+- Result: ✅ Authenticated as user → `/` (home page)
 
-**UI Components**:
-- **Add Admin Form**: Username, password, confirm password fields
-- **Admin Table**: Displays all admin accounts with timestamps
-- **Delete Button**: Shows for all admins except main admin
-- **Delete Dialog**: Confirmation modal before deletion
-- **Toast Notifications**: Success/error messages for all actions
-- **Error Display**: Shows validation errors below form
+**Scenario 3: Invalid Login**
+- User: nonexistent@test.com
+- Password: wrongpass
+- Result: ❌ "Invalid credentials" error
 
-**Benefits**:
-- ✅ **Multi-Admin Support**: Multiple people can manage the system
-- ✅ **Secure Access Control**: Only main admin can manage admins
-- ✅ **Audit Trail**: Creation timestamps for all admins
-- ✅ **Safety**: Main admin protected from accidental deletion
-- ✅ **Validation**: Prevents common mistakes (duplicate usernames, password mismatches)
+**Scenario 4: User Signup**
+- New user registers via `/signup` page
+- Fills: name, email, phone, password, confirm password
+- Result: ✅ Account created as regular user (NOT admin)
+- Can login via `/login` and access public site
 
-**User Flow**:
-1. Main admin logs in
-2. Clicks "Users" in admin navigation
-3. Views list of all admin accounts
-4. To add admin:
-   - Fills out form with username and passwords
-   - Clicks "Add Admin"
-   - New admin appears in table
-5. To remove admin:
-   - Clicks delete button for admin
-   - Confirms deletion in dialog
-   - Admin is removed from list
+**Security Notes:**
+- ✅ Admins checked FIRST (priority over users)
+- ✅ Only way to create admin: via `/admin/users` page by main admin
+- ✅ Signup page creates regular users only
+- ✅ All passwords hashed with SHA-256
+- ✅ No hardcoded credentials (uses environment variables)
 
-**The MotoPizza shop now has complete admin management with role-based access control!** 🔐✨
+**The MotoPizza shop now has a seamless, unified authentication system!** 🔐✨

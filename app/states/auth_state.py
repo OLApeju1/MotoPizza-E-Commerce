@@ -80,7 +80,6 @@ class AuthState(rx.State):
             return
         self._ensure_main_admin()
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-        return_url = self.router.page.params.get("return_url", "/")
         for admin in self.admins:
             if (
                 admin["username"] == username
@@ -94,10 +93,8 @@ class AuthState(rx.State):
                     "password_hash": admin["password_hash"],
                 }
                 self.error_message = ""
-                main_state = await self.get_state(State)
-                if return_url and return_url != "/":
-                    return rx.redirect(return_url)
                 return rx.redirect("/admin/products")
+        return_url = self.router.page.params.get("return_url", "/")
         for user in self.users:
             if user["email"] == username and user["password_hash"] == hashed_password:
                 self.is_authenticated = True

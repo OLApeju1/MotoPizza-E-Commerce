@@ -19,7 +19,12 @@ def login_page() -> rx.Component:
                     href="/",
                 ),
                 rx.el.h2(
-                    "Admin Login", class_name="mt-6 text-2xl font-bold text-gray-900"
+                    "Login to Your Account",
+                    class_name="mt-6 text-2xl font-bold text-gray-900",
+                ),
+                rx.el.p(
+                    "Enter your details to access your account or the admin dashboard.",
+                    class_name="text-sm text-gray-600 mt-2",
                 ),
                 class_name="text-center",
             ),
