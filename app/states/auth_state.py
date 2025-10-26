@@ -37,6 +37,16 @@ class AuthState(rx.State):
         )
 
     @rx.var
+    def is_admin(self) -> bool:
+        return (
+            self.is_authenticated
+            and self.authenticated_user is not None
+            and any(
+                (a["username"] == self.authenticated_user["email"] for a in self.admins)
+            )
+        )
+
+    @rx.var
     def token_is_valid(self) -> bool:
         return self.is_authenticated
 

@@ -38,7 +38,7 @@ def header() -> rx.Component:
             ),
             rx.el.div(
                 rx.cond(
-                    AuthState.is_authenticated,
+                    AuthState.is_admin,
                     rx.el.div(
                         rx.el.a(
                             "Uploads",
@@ -85,12 +85,16 @@ def header() -> rx.Component:
                                 "px-3 py-2 text-sm font-medium text-gray-600 hover:text-teal-500 transition-colors",
                             ),
                         ),
-                        rx.el.button(
-                            "Logout",
-                            on_click=AuthState.logout,
-                            class_name="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors",
-                        ),
                         class_name="flex items-center gap-2 border-l ml-4 pl-4",
+                    ),
+                    None,
+                ),
+                rx.cond(
+                    AuthState.is_authenticated,
+                    rx.el.button(
+                        "Logout",
+                        on_click=AuthState.logout,
+                        class_name="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 transition-colors",
                     ),
                     rx.el.a(
                         "Login",
