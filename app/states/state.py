@@ -311,16 +311,42 @@ class State(rx.State):
         self.is_uploading = True
         self.upload_progress = 0
         yield
+        MAX_FILE_SIZE = 10 * 1024 * 1024
+        ALLOWED_MIME_TYPES = [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "video/mp4",
+            "video/quicktime",
+            "video/x-msvideo",
+        ]
+        successful_uploads = 0
         for i, file in enumerate(files):
-            upload_data = await file.read()
-            outfile = rx.get_upload_dir() / file.name
-            with outfile.open("wb") as file_object:
-                file_object.write(upload_data)
-            self.uploaded_files.append(file.name)
+            if file.size > MAX_FILE_SIZE:
+                yield rx.toast.error(f"'{file.name}' is too large (max 10MB).")
+                continue
+            if file.content_type not in ALLOWED_MIME_TYPES:
+                yield rx.toast.error(f"'{file.name}' has an invalid file type.")
+                continue
+            try:
+                upload_data = await file.read()
+                sanitized_filename = bleach.clean(file.name.replace(" ", "_"))
+                outfile = rx.get_upload_dir() / sanitized_filename
+                with outfile.open("wb") as file_object:
+                    file_object.write(upload_data)
+                self.uploaded_files.append(sanitized_filename)
+                successful_uploads += 1
+            except Exception as e:
+                import logging
+
+                logging.exception(f"Error: {e}")
+                yield rx.toast.error(f"Upload failed for '{file.name}'.")
             self.upload_progress = int((i + 1) / len(files) * 100)
             yield
         self.is_uploading = False
-        yield rx.toast.success(f"Successfully uploaded {len(files)} files!")
+        if successful_uploads > 0:
+            yield rx.toast.success(f"Successfully uploaded {successful_uploads} files!")
         return
 
     @rx.event

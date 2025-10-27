@@ -5,6 +5,8 @@ from app.states.auth_state import AuthState
 import asyncio
 import time
 import logging
+import bleach
+import os
 
 
 class AdminState(rx.State):
@@ -21,10 +23,23 @@ class AdminState(rx.State):
     new_ingredient: str = ""
     is_saving: bool = False
     is_editing: bool = False
+    MAX_FILE_SIZE = 10 * 1024 * 1024
+    ALLOWED_MIME_TYPES = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+        "video/mp4",
+        "video/quicktime",
+        "video/x-msvideo",
+    ]
+
+    def _sanitize_input(self, value: str) -> str:
+        return bleach.clean(value.strip())
 
     @rx.event
     def set_product_form_field(self, field: str, value):
-        self.product_form[field] = value
+        self.product_form[field] = self._sanitize_input(value)
 
     @rx.event
     def set_price(self, price: str):
@@ -36,11 +51,12 @@ class AdminState(rx.State):
 
     @rx.event
     def add_ingredient(self):
+        sanitized_ingredient = self._sanitize_input(self.new_ingredient)
         if (
-            self.new_ingredient
-            and self.new_ingredient not in self.product_form["ingredients"]
+            sanitized_ingredient
+            and sanitized_ingredient not in self.product_form["ingredients"]
         ):
-            self.product_form["ingredients"].append(self.new_ingredient.strip())
+            self.product_form["ingredients"].append(sanitized_ingredient)
         self.new_ingredient = ""
 
     @rx.event
@@ -80,12 +96,24 @@ class AdminState(rx.State):
             return
         if not files:
             return
-        upload_data = await files[0].read()
-        outfile = rx.get_upload_dir() / files[0].name
-        with outfile.open("wb") as file_object:
-            file_object.write(upload_data)
-        self.product_form["image"] = files[0].name
-        yield rx.toast.success("Image uploaded successfully!")
+        file = files[0]
+        if file.size > self.MAX_FILE_SIZE:
+            yield rx.toast.error("File is too large (max 10MB).")
+            return
+        if file.content_type not in self.ALLOWED_MIME_TYPES:
+            yield rx.toast.error("Invalid file type.")
+            return
+        sanitized_filename = self._sanitize_input(file.name).replace(" ", "_")
+        upload_data = await file.read()
+        outfile = rx.get_upload_dir() / sanitized_filename
+        try:
+            with outfile.open("wb") as file_object:
+                file_object.write(upload_data)
+            self.product_form["image"] = sanitized_filename
+            yield rx.toast.success("Image uploaded successfully!")
+        except Exception as e:
+            logging.exception(f"File upload failed: {e}")
+            yield rx.toast.error("File upload failed.")
 
     @rx.event
     async def save_product(self, form_data: dict[str, str]):
