@@ -60,7 +60,9 @@ class AuthState(rx.State):
     def token_is_valid(self) -> bool:
         return self.is_authenticated
 
-    def _sanitize_input(self, value: str) -> str:
+    def _sanitize_input(self, value: str | None) -> str:
+        if value is None:
+            return ""
         return bleach.clean(value.strip())
 
     @rx.event
@@ -98,7 +100,7 @@ class AuthState(rx.State):
     async def login(self, form_data: dict[str, str]):
         from app.states.state import State
 
-        username = self._sanitize_input(form_data.get("username", ""))
+        username = self._sanitize_input(form_data.get("username"))
         password = form_data.get("password", "")
         if self.account_lockout_until.get(username, 0) > time.time():
             self.error_message = "Account locked. Please try again later."

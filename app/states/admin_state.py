@@ -34,7 +34,9 @@ class AdminState(rx.State):
         "video/x-msvideo",
     ]
 
-    def _sanitize_input(self, value: str) -> str:
+    def _sanitize_input(self, value: str | None) -> str:
+        if value is None:
+            return ""
         return bleach.clean(value.strip())
 
     @rx.event
