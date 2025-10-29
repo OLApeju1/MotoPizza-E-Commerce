@@ -36,6 +36,11 @@ class AuthState(rx.State):
     login_timestamp: float = 0.0
     failed_login_attempts: dict[str, int] = {}
     account_lockout_until: dict[str, float] = {}
+    show_password: bool = False
+
+    @rx.event
+    def toggle_password_visibility(self):
+        self.show_password = not self.show_password
 
     @rx.var
     def is_main_admin(self) -> bool:

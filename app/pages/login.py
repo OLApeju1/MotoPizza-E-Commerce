@@ -49,11 +49,25 @@ def login_page() -> rx.Component:
                             html_for="password",
                             class_name="block text-sm font-medium text-gray-700",
                         ),
-                        rx.el.input(
-                            id="password",
-                            name="password",
-                            type="password",
-                            class_name="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                        rx.el.div(
+                            rx.el.input(
+                                id="password",
+                                name="password",
+                                type=rx.cond(
+                                    AuthState.show_password, "text", "password"
+                                ),
+                                class_name="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500",
+                            ),
+                            rx.el.button(
+                                rx.icon(
+                                    rx.cond(AuthState.show_password, "eye-off", "eye"),
+                                    class_name="h-5 w-5",
+                                ),
+                                on_click=AuthState.toggle_password_visibility,
+                                type="button",
+                                class_name="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-teal-600",
+                            ),
+                            class_name="relative mt-1",
                         ),
                     ),
                     rx.cond(
