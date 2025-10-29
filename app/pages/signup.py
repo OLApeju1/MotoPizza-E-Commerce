@@ -9,7 +9,7 @@ def signup_page() -> rx.Component:
                 rx.el.a(
                     rx.el.div(
                         rx.image(
-                            src="placeholder.svg",
+                            src="/logo_bakery_slice.png",
                             alt="Motobites Logo",
                             class_name="h-10 w-auto",
                         ),
