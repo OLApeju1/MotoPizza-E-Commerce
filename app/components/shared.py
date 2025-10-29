@@ -9,7 +9,7 @@ def header() -> rx.Component:
             rx.el.a(
                 rx.el.div(
                     rx.image(
-                        src="/triangle_geometric_motobites.png",
+                        src="placeholder.svg",
                         alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
@@ -129,7 +129,7 @@ def footer() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.image(
-                        src="/triangle_geometric_motobites.png",
+                        src="placeholder.svg",
                         alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
