@@ -39,7 +39,7 @@ class Order(TypedDict):
 
 
 class State(rx.State):
-    """The main state for the MotoPizza app."""
+    """The main state for the Motobites app."""
 
     uploaded_files: list[str] = []
     is_uploading: bool = False
@@ -160,8 +160,8 @@ class State(rx.State):
         """Generates the WhatsApp message for the current product."""
         if self.current_product:
             product_name = self.current_product["name"]
-            return f"Hello MotoPizza! I'm interested in booking the {product_name}. Can we discuss the details?"
-        return "Hello MotoPizza! I'm interested in one of your products."
+            return f"Hello Motobites! I'm interested in booking the {product_name}. Can we discuss the details?"
+        return "Hello Motobites! I'm interested in one of your products."
 
     @rx.var
     def whatsapp_url(self) -> str:
@@ -183,7 +183,7 @@ class State(rx.State):
         if not self.cart:
             return ""
         message_lines = [
-            "Hello MotoPizza! I'd like to place an order for the following items:",
+            "Hello Motobites! I'd like to place an order for the following items:",
             "",
         ]
         for item in self.cart:
@@ -376,7 +376,7 @@ class State(rx.State):
     testimonials: list[dict[str, str]] = [
         {
             "name": "Jessica P.",
-            "review": "The Classic Chocolate Fudge cake was the star of our party! Incredibly moist and rich. MotoPizza is my new go-to for all celebrations.",
+            "review": "The Classic Chocolate Fudge cake was the star of our party! Incredibly moist and rich. Motobites is my new go-to for all celebrations.",
             "avatar": "JP",
         },
         {

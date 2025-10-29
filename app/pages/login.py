@@ -9,11 +9,11 @@ def login_page() -> rx.Component:
                 rx.el.a(
                     rx.el.div(
                         rx.image(
-                            src="/logo_bakery_slice.png",
-                            alt="MotoPizza Logo",
+                            src="placeholder.svg",
+                            alt="Motobites Logo",
                             class_name="h-10 w-auto",
                         ),
-                        rx.el.span("motopizza bite", class_name="font-bold text-xl"),
+                        rx.el.span("Motobites", class_name="font-bold text-xl"),
                         class_name="flex items-center gap-2",
                     ),
                     href="/",

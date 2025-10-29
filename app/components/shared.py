@@ -9,11 +9,11 @@ def header() -> rx.Component:
             rx.el.a(
                 rx.el.div(
                     rx.image(
-                        src="/logo_bakery_slice.png",
-                        alt="MotoPizza Logo",
+                        src="placeholder.svg",
+                        alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
-                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
+                    rx.el.span("Motobites", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2",
                 ),
                 href="/",
@@ -129,15 +129,15 @@ def footer() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.image(
-                        src="/logo_bakery_slice.png",
-                        alt="MotoPizza Logo",
+                        src="placeholder.svg",
+                        alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
-                    rx.el.span("motopizza bite", class_name="font-bold text-lg"),
+                    rx.el.span("Motobites", class_name="font-bold text-lg"),
                     class_name="flex items-center gap-2 mb-4",
                 ),
                 rx.el.p(
-                    "Crafting delicious memories, one slice at a time.",
+                    "Crafting delicious memories, one bite at a time.",
                     class_name="text-gray-600 text-sm max-w-xs",
                 ),
             ),
@@ -167,7 +167,7 @@ def footer() -> rx.Component:
                         class_name="text-gray-600 text-sm mb-1",
                     ),
                     rx.el.p(
-                        "contact@motopizza.com", class_name="text-gray-600 text-sm"
+                        "contact@motobites.com", class_name="text-gray-600 text-sm"
                     ),
                 ),
                 class_name="grid grid-cols-2 gap-8",
@@ -177,7 +177,7 @@ def footer() -> rx.Component:
         rx.el.div(
             rx.el.div(
                 rx.el.p(
-                    "© 2024 MotoPizza. All rights reserved.",
+                    "© 2024 Motobites. All rights reserved.",
                     class_name="text-sm text-gray-500",
                 ),
                 rx.el.div(

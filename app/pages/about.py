@@ -192,19 +192,19 @@ def social_media_section() -> rx.Component:
             rx.el.div(
                 rx.el.a(
                     rx.icon("instagram", class_name="h-8 w-8"),
-                    rx.el.span("@motopizza.bite", class_name="font-semibold text-lg"),
+                    rx.el.span("@motobites", class_name="font-semibold text-lg"),
                     href="#",
                     class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
                 ),
                 rx.el.a(
                     rx.icon("facebook", class_name="h-8 w-8"),
-                    rx.el.span("MotoPizza Bite", class_name="font-semibold text-lg"),
+                    rx.el.span("Motobites", class_name="font-semibold text-lg"),
                     href="#",
                     class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
                 ),
                 rx.el.a(
                     rx.icon("twitch", class_name="h-8 w-8"),
-                    rx.el.span("@motopizza.bite", class_name="font-semibold text-lg"),
+                    rx.el.span("@motobites", class_name="font-semibold text-lg"),
                     href="#",
                     class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
                 ),
