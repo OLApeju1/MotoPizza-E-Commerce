@@ -9,7 +9,7 @@ def login_page() -> rx.Component:
                 rx.el.a(
                     rx.el.div(
                         rx.image(
-                            src="/triangle_geometric_motobites.png",
+                            src="placeholder.svg",
                             alt="Motobites Logo",
                             class_name="h-10 w-auto",
                         ),

@@ -41,9 +41,15 @@ class Order(TypedDict):
 class State(rx.State):
     """The main state for the Motobites app."""
 
+    show_mobile_menu: bool = False
     uploaded_files: list[str] = []
     is_uploading: bool = False
     upload_progress: int = 0
+
+    @rx.event
+    def toggle_mobile_menu(self):
+        self.show_mobile_menu = not self.show_mobile_menu
+
     cart: list[CartItem] = []
     customer_emails: list[CustomerEmail] = []
     orders: list[Order] = []

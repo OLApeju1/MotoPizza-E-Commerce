@@ -9,7 +9,7 @@ def header() -> rx.Component:
             rx.el.a(
                 rx.el.div(
                     rx.image(
-                        src="/triangle_geometric_motobites.png",
+                        src="placeholder.svg",
                         alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
@@ -37,6 +37,11 @@ def header() -> rx.Component:
                 class_name="hidden md:flex items-center gap-2",
             ),
             rx.el.div(
+                rx.el.button(
+                    rx.icon("menu", class_name="h-6 w-6"),
+                    on_click=State.toggle_mobile_menu,
+                    class_name="md:hidden p-2 text-gray-600 hover:text-teal-500",
+                ),
                 rx.cond(
                     AuthState.is_admin,
                     rx.el.div(
@@ -119,6 +124,34 @@ def header() -> rx.Component:
             ),
             class_name="container mx-auto flex items-center justify-between p-4",
         ),
+        rx.cond(
+            State.show_mobile_menu,
+            rx.el.div(
+                rx.el.div(
+                    rx.el.div(
+                        rx.el.a(
+                            "Home",
+                            href="/",
+                            on_click=State.toggle_mobile_menu,
+                            class_name="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50",
+                        ),
+                        rx.el.a(
+                            "Products",
+                            href="/products",
+                            on_click=State.toggle_mobile_menu,
+                            class_name="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50",
+                        ),
+                        rx.el.a(
+                            "About",
+                            href="/about",
+                            on_click=State.toggle_mobile_menu,
+                            class_name="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50",
+                        ),
+                    )
+                ),
+                class_name="md:hidden",
+            ),
+        ),
         class_name="w-full bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40",
     )
 
@@ -129,7 +162,7 @@ def footer() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.image(
-                        src="/triangle_geometric_motobites.png",
+                        src="placeholder.svg",
                         alt="Motobites Logo",
                         class_name="h-8 w-auto",
                     ),
