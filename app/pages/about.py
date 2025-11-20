@@ -78,18 +78,18 @@ def gallery_section() -> rx.Component:
                                     rx.icon(
                                         "video", class_name="h-12 w-12 text-gray-500"
                                     ),
-                                    class_name="w-full h-full flex items-center justify-center bg-gray-100",
+                                    class_name="w-full h-48 flex items-center justify-center bg-gray-100",
                                 ),
                                 rx.image(
                                     src=rx.get_upload_url(filename),
                                     alt="Gallery image",
-                                    class_name="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300",
+                                    class_name="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 block",
                                 ),
                             ),
-                            class_name="aspect-video w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group",
+                            class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white",
                         ),
                     ),
-                    class_name="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6",
+                    class_name="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
                 ),
                 rx.el.div(
                     rx.el.p(
