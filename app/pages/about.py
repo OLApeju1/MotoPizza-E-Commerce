@@ -8,11 +8,11 @@ def about_hero() -> rx.Component:
         rx.el.div(
             rx.el.h1(
                 "Our Story: A Passion for Baking",
-                class_name="text-4xl font-bold tracking-tight text-gray-900",
+                class_name="text-4xl font-bold tracking-tight text-gray-900 animate-fade-in-up",
             ),
             rx.el.p(
                 "From a small home kitchen to a beloved community bakery, our journey is fueled by love, family, and flour.",
-                class_name="mt-2 text-lg text-gray-600",
+                class_name="mt-2 text-lg text-gray-600 animate-fade-in-up delay-200",
             ),
             class_name="text-center py-12 bg-teal-50/50 border-b border-gray-200",
         ),
@@ -26,7 +26,7 @@ def about_hero() -> rx.Component:
                         "To craft the most delicious and memorable baked goods that bring joy to our community, using only the finest ingredients and a touch of artisanal magic.",
                         class_name="mt-2 text-gray-600 leading-relaxed",
                     ),
-                    class_name="max-w-xl",
+                    class_name="max-w-xl animate-slide-in-left",
                 ),
                 rx.el.div(
                     rx.el.h2(
@@ -44,7 +44,7 @@ def about_hero() -> rx.Component:
                         ),
                         class_name="mt-2 text-gray-600 list-disc list-inside space-y-1",
                     ),
-                    class_name="max-w-xl",
+                    class_name="max-w-xl animate-slide-in-right",
                 ),
                 class_name="grid md:grid-cols-2 gap-12",
             ),
@@ -58,18 +58,18 @@ def gallery_section() -> rx.Component:
         rx.el.div(
             rx.el.h2(
                 "A Glimpse Into Our World",
-                class_name="text-3xl font-bold text-center text-gray-900",
+                class_name="text-3xl font-bold text-center text-gray-900 animate-fade-in-up",
             ),
             rx.el.p(
                 "The art, the process, and the delicious results. Uploaded from our admin panel.",
-                class_name="mt-2 text-center text-gray-600",
+                class_name="mt-2 text-center text-gray-600 animate-fade-in-up delay-200",
             ),
             rx.cond(
                 State.uploaded_files.length() > 0,
                 rx.el.div(
                     rx.foreach(
                         State.uploaded_files,
-                        lambda filename: rx.el.div(
+                        lambda filename, index: rx.el.div(
                             rx.cond(
                                 filename.to_string().lower().contains(".mp4")
                                 | filename.to_string().lower().contains(".mov")
@@ -86,7 +86,8 @@ def gallery_section() -> rx.Component:
                                     class_name="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 block",
                                 ),
                             ),
-                            class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white",
+                            class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white animate-scale-in opacity-0",
+                            style={"animation-delay": (index * 100).to_string() + "ms"},
                         ),
                     ),
                     class_name="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
@@ -96,7 +97,7 @@ def gallery_section() -> rx.Component:
                         "No images uploaded yet. Visit the admin upload page to add some!",
                         class_name="text-center text-gray-500",
                     ),
-                    class_name="mt-12 text-center py-10 border-2 border-dashed rounded-lg",
+                    class_name="mt-12 text-center py-10 border-2 border-dashed rounded-lg animate-fade-in",
                 ),
             ),
             class_name="container mx-auto px-4 py-16",
@@ -129,14 +130,21 @@ def testimonials_section() -> rx.Component:
         rx.el.div(
             rx.el.h2(
                 "From Our Customers",
-                class_name="text-3xl font-bold text-center text-gray-900",
+                class_name="text-3xl font-bold text-center text-gray-900 animate-fade-in-up",
             ),
             rx.el.p(
                 "Don't just take our word for it. Here's what people are saying.",
-                class_name="mt-2 text-center text-gray-600",
+                class_name="mt-2 text-center text-gray-600 animate-fade-in-up delay-200",
             ),
             rx.el.div(
-                rx.foreach(State.testimonials, testimonial_card),
+                rx.foreach(
+                    State.testimonials,
+                    lambda testimonial, index: rx.el.div(
+                        testimonial_card(testimonial),
+                        class_name="animate-fade-in-up opacity-0",
+                        style={"animation-delay": (index * 200).to_string() + "ms"},
+                    ),
+                ),
                 class_name="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8",
             ),
             class_name="container mx-auto px-4 py-16",
@@ -162,14 +170,21 @@ def faq_section() -> rx.Component:
         rx.el.div(
             rx.el.h2(
                 "Frequently Asked Questions",
-                class_name="text-3xl font-bold text-center text-gray-900",
+                class_name="text-3xl font-bold text-center text-gray-900 animate-fade-in-up",
             ),
             rx.el.p(
                 "Everything you need to know before placing an order.",
-                class_name="mt-2 text-center text-gray-600",
+                class_name="mt-2 text-center text-gray-600 animate-fade-in-up delay-200",
             ),
             rx.el.div(
-                rx.foreach(State.faqs, faq_item),
+                rx.foreach(
+                    State.faqs,
+                    lambda faq, index: rx.el.div(
+                        faq_item(faq),
+                        class_name="animate-fade-in opacity-0",
+                        style={"animation-delay": (index * 150).to_string() + "ms"},
+                    ),
+                ),
                 class_name="mt-8 max-w-3xl mx-auto divide-y divide-gray-200",
             ),
             class_name="container mx-auto px-4 py-16",
@@ -183,30 +198,30 @@ def social_media_section() -> rx.Component:
         rx.el.div(
             rx.el.h2(
                 "Follow Our Journey",
-                class_name="text-3xl font-bold text-center text-gray-900",
+                class_name="text-3xl font-bold text-center text-gray-900 animate-fade-in-up",
             ),
             rx.el.p(
                 "Stay connected with us on social media for the latest updates, behind-the-scenes content, and delicious inspiration.",
-                class_name="mt-2 text-center text-gray-600 max-w-2xl mx-auto",
+                class_name="mt-2 text-center text-gray-600 max-w-2xl mx-auto animate-fade-in-up delay-200",
             ),
             rx.el.div(
                 rx.el.a(
                     rx.icon("instagram", class_name="h-8 w-8"),
                     rx.el.span("@motobites", class_name="font-semibold text-lg"),
                     href="#",
-                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all animate-scale-in delay-100",
                 ),
                 rx.el.a(
                     rx.icon("facebook", class_name="h-8 w-8"),
                     rx.el.span("Motobites", class_name="font-semibold text-lg"),
                     href="#",
-                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all animate-scale-in delay-200",
                 ),
                 rx.el.a(
                     rx.icon("twitch", class_name="h-8 w-8"),
                     rx.el.span("@motobites", class_name="font-semibold text-lg"),
                     href="#",
-                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all",
+                    class_name="flex flex-col items-center gap-2 p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg hover:border-teal-300 transition-all animate-scale-in delay-300",
                 ),
                 class_name="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto",
             ),

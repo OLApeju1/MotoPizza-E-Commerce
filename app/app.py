@@ -10,6 +10,7 @@ from app.pages.login import login_page
 
 app = rx.App(
     theme=rx.theme(appearance="light"),
+    stylesheets=["/animations.css"],
     head_components=[
         rx.el.link(rel="preconnect", href="https://fonts.googleapis.com"),
         rx.el.link(rel="preconnect", href="https://fonts.gstatic.com", cross_origin=""),
