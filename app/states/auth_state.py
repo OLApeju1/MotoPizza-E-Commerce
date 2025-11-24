@@ -251,8 +251,7 @@ class AuthState(rx.State):
             self.is_authenticated = False
             self.authenticated_user = None
             self.login_timestamp = 0.0
-            return (
-                rx.toast.info("Session expired. Please log in again."),
-                rx.redirect("/login"),
-            )
+            yield rx.toast.info("Session expired. Please log in again.")
+            yield rx.redirect("/login")
+            return
         self.login_timestamp = time.time()

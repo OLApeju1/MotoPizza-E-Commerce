@@ -53,6 +53,72 @@ def about_hero() -> rx.Component:
     )
 
 
+def get_carousel_item_class(index: rx.Var[int]) -> rx.Component:
+    total = State.carousel_total_images
+    current = State.current_image_index
+    is_center = index == current
+    is_left_1 = index == (current - 1 + total) % total
+    is_right_1 = index == (current + 1) % total
+    is_left_2 = index == (current - 2 + total) % total
+    is_right_2 = index == (current + 2) % total
+    return rx.cond(
+        is_center,
+        "carousel-item-center",
+        rx.cond(
+            is_left_1,
+            "carousel-item-left-1",
+            rx.cond(
+                is_right_1,
+                "carousel-item-right-1",
+                rx.cond(
+                    is_left_2,
+                    "carousel-item-left-2",
+                    rx.cond(
+                        is_right_2, "carousel-item-right-2", "carousel-item-hidden"
+                    ),
+                ),
+            ),
+        ),
+    )
+
+
+def carousel_view() -> rx.Component:
+    return rx.el.div(
+        rx.el.div(
+            rx.el.div(
+                rx.foreach(
+                    State.uploaded_images,
+                    lambda filename, index: rx.el.div(
+                        rx.image(
+                            src=rx.get_upload_url(filename),
+                            alt="Gallery image",
+                            class_name="w-full h-full object-cover",
+                        ),
+                        class_name=rx.Var.create("carousel-item cursor-pointer ")
+                        + get_carousel_item_class(index),
+                        on_click=lambda: State.set_image_index(index),
+                    ),
+                ),
+                class_name="carousel-container",
+            ),
+            rx.el.button(
+                rx.icon("chevron-left", class_name="w-8 h-8 text-gray-800"),
+                on_click=State.prev_image,
+                disabled=State.carousel_total_images <= 1,
+                class_name="absolute left-0 top-1/2 -translate-y-1/2 z-50 p-2 bg-white/80 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all disabled:opacity-0 disabled:pointer-events-none",
+            ),
+            rx.el.button(
+                rx.icon("chevron-right", class_name="w-8 h-8 text-gray-800"),
+                on_click=State.next_image,
+                disabled=State.carousel_total_images <= 1,
+                class_name="absolute right-0 top-1/2 -translate-y-1/2 z-50 p-2 bg-white/80 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all disabled:opacity-0 disabled:pointer-events-none",
+            ),
+            class_name="relative w-full max-w-5xl mx-auto h-[300px] md:h-[500px]",
+        ),
+        class_name="carousel-perspective w-full overflow-hidden py-8 animate-fade-in-up",
+    )
+
+
 def gallery_section() -> rx.Component:
     return rx.el.section(
         rx.el.div(
@@ -82,23 +148,7 @@ def gallery_section() -> rx.Component:
                         "Image Gallery",
                         class_name="text-2xl font-bold text-gray-800 mb-6 border-b pb-2",
                     ),
-                    rx.el.div(
-                        rx.foreach(
-                            State.uploaded_images,
-                            lambda filename, index: rx.el.div(
-                                rx.image(
-                                    src=rx.get_upload_url(filename),
-                                    alt="Gallery image",
-                                    class_name="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 block",
-                                ),
-                                class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white animate-scale-in opacity-0",
-                                style={
-                                    "animation-delay": (index * 100).to_string() + "ms"
-                                },
-                            ),
-                        ),
-                        class_name="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
-                    ),
+                    carousel_view(),
                     class_name="mt-12",
                 ),
             ),

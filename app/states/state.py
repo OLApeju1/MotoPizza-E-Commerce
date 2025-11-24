@@ -46,6 +46,35 @@ class State(rx.State):
     uploaded_files: list[str] = []
     is_uploading: bool = False
     upload_progress: int = 0
+    current_image_index: int = 0
+
+    @rx.var
+    def carousel_total_images(self) -> int:
+        return len(self.uploaded_images)
+
+    @rx.event
+    def next_image(self):
+        if self.carousel_total_images > 0:
+            self.current_image_index = (
+                self.current_image_index + 1
+            ) % self.carousel_total_images
+
+    @rx.event
+    def prev_image(self):
+        if self.carousel_total_images > 0:
+            self.current_image_index = (
+                self.current_image_index - 1 + self.carousel_total_images
+            ) % self.carousel_total_images
+
+    @rx.event
+    def reset_carousel(self):
+        self.current_image_index = 0
+
+    @rx.event
+    def set_image_index(self, index: int):
+        """Set the current image index directly."""
+        if 0 <= index < self.carousel_total_images:
+            self.current_image_index = index
 
     @rx.var
     def uploaded_images(self) -> list[str]:
@@ -383,6 +412,7 @@ class State(rx.State):
         if not auth_state.is_authenticated:
             return (rx.toast.error("Unauthorized"), rx.redirect("/login"))
         self.uploaded_files.clear()
+        self.current_image_index = 0
 
     @rx.event
     async def delete_uploaded_file(self, filename: str):
@@ -391,6 +421,18 @@ class State(rx.State):
         if not auth_state.is_authenticated:
             return (rx.toast.error("Unauthorized"), rx.redirect("/login"))
         self.uploaded_files = [f for f in self.uploaded_files if f != filename]
+        image_exts = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
+        new_images_count = len(
+            [
+                f
+                for f in self.uploaded_files
+                if any((f.lower().endswith(ext) for ext in image_exts))
+            ]
+        )
+        if new_images_count == 0:
+            self.current_image_index = 0
+        elif self.current_image_index >= new_images_count:
+            self.current_image_index = new_images_count - 1
 
     gallery_images: list[str] = [
         "https://placehold.co/600x400/A62C2A/FFFFFF/png?text=Red+Velvet+Slice",
