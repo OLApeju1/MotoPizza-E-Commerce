@@ -47,6 +47,26 @@ class State(rx.State):
     is_uploading: bool = False
     upload_progress: int = 0
 
+    @rx.var
+    def uploaded_images(self) -> list[str]:
+        """Filter uploaded files for images."""
+        image_exts = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
+        return [
+            f
+            for f in self.uploaded_files
+            if any((f.lower().endswith(ext) for ext in image_exts))
+        ]
+
+    @rx.var
+    def uploaded_videos(self) -> list[str]:
+        """Filter uploaded files for videos."""
+        video_exts = [".mp4", ".mov", ".avi"]
+        return [
+            f
+            for f in self.uploaded_files
+            if any((f.lower().endswith(ext) for ext in video_exts))
+        ]
+
     @rx.event
     def toggle_mobile_menu(self):
         self.show_mobile_menu = not self.show_mobile_menu

@@ -65,39 +65,69 @@ def gallery_section() -> rx.Component:
                 class_name="mt-2 text-center text-gray-600 animate-fade-in-up delay-200",
             ),
             rx.cond(
-                State.uploaded_files.length() > 0,
+                (State.uploaded_images.length() == 0)
+                & (State.uploaded_videos.length() == 0),
                 rx.el.div(
-                    rx.foreach(
-                        State.uploaded_files,
-                        lambda filename, index: rx.el.div(
-                            rx.cond(
-                                filename.to_string().lower().contains(".mp4")
-                                | filename.to_string().lower().contains(".mov")
-                                | filename.to_string().lower().contains(".avi"),
+                    rx.el.p(
+                        "No images or videos uploaded yet. Visit the admin upload page to add some!",
+                        class_name="text-center text-gray-500",
+                    ),
+                    class_name="mt-12 text-center py-10 border-2 border-dashed rounded-lg animate-fade-in",
+                ),
+            ),
+            rx.cond(
+                State.uploaded_images.length() > 0,
+                rx.el.div(
+                    rx.el.h3(
+                        "Image Gallery",
+                        class_name="text-2xl font-bold text-gray-800 mb-6 border-b pb-2",
+                    ),
+                    rx.el.div(
+                        rx.foreach(
+                            State.uploaded_images,
+                            lambda filename, index: rx.el.div(
+                                rx.image(
+                                    src=rx.get_upload_url(filename),
+                                    alt="Gallery image",
+                                    class_name="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 block",
+                                ),
+                                class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white animate-scale-in opacity-0",
+                                style={
+                                    "animation-delay": (index * 100).to_string() + "ms"
+                                },
+                            ),
+                        ),
+                        class_name="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
+                    ),
+                    class_name="mt-12",
+                ),
+            ),
+            rx.cond(
+                State.uploaded_videos.length() > 0,
+                rx.el.div(
+                    rx.el.h3(
+                        "Video Gallery",
+                        class_name="text-2xl font-bold text-gray-800 mb-6 border-b pb-2",
+                    ),
+                    rx.el.div(
+                        rx.foreach(
+                            State.uploaded_videos,
+                            lambda filename, index: rx.el.div(
                                 rx.el.div(
                                     rx.icon(
                                         "video", class_name="h-12 w-12 text-gray-500"
                                     ),
                                     class_name="w-full h-48 flex items-center justify-center bg-gray-100",
                                 ),
-                                rx.image(
-                                    src=rx.get_upload_url(filename),
-                                    alt="Gallery image",
-                                    class_name="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300 block",
-                                ),
+                                class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white animate-scale-in opacity-0",
+                                style={
+                                    "animation-delay": (index * 100).to_string() + "ms"
+                                },
                             ),
-                            class_name="w-full overflow-hidden rounded-lg shadow-md border border-gray-200 group bg-white animate-scale-in opacity-0",
-                            style={"animation-delay": (index * 100).to_string() + "ms"},
                         ),
+                        class_name="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
                     ),
-                    class_name="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-start",
-                ),
-                rx.el.div(
-                    rx.el.p(
-                        "No images uploaded yet. Visit the admin upload page to add some!",
-                        class_name="text-center text-gray-500",
-                    ),
-                    class_name="mt-12 text-center py-10 border-2 border-dashed rounded-lg animate-fade-in",
+                    class_name="mt-16",
                 ),
             ),
             class_name="container mx-auto px-4 py-16",
